@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Photo your fridge and get a personalised dinner recipe in seconds.">
+  <title>FridgeBrain 🧠</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    @property --a { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+
+    /* ── Tokens ───────────────────────────────────────────────────────── */
+    :root {
+      --bg:       #f4f3ef;
+      --card:     #ffffff;
+      --surface:  #f8f8f6;
+      --green:    #16a34a;
+      --green-dk: #15803d;
+      --green-lt: #f0fdf4;
+      --green-bd: #bbf7d0;
+      --amber:    #d97706;
+      --amber-lt: #fffbeb;
+      --amber-bd: #fde68a;
+      --red:      #dc2626;
+      --text:     #0d0d0d;
+      --text-2:   #404040;
+      --muted:    #808080;
+      --muted-lt: #b0b0b0;
+      --border:   #e8e8e8;
+      --border-2: #d4d4d4;
+      --radius:   24px;
+      --shadow:   0 1px 2px rgba(0,0,0,.04), 0 4px 20px rgba(0,0,0,.07);
+      --shadow-lg:0 2px 4px rgba(0,0,0,.05), 0 12px 40px rgba(0,0,0,.10);
+      --focus:    0 0 0 3px rgba(22,163,74,.35);
+    }
+    [data-theme="dark"] {
+      --bg:#0d0d0d; --card:#1a1a1a; --surface:#141414;
+      --green:#22c55e; --green-dk:#16a34a; --green-lt:#052e16; --green-bd:#166534;
+      --amber:#f59e0b; --amber-lt:#1c1200; --amber-bd:#78350f;
+      --red:#f87171; --text:#f5f5f5; --text-2:#b0b0b0;
+      --muted:#707070; --muted-lt:#505050;
+      --border:#2a2a2a; --border-2:#383838;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 20px rgba(0,0,0,.4);
+      --shadow-lg:0 2px 4px rgba(0,0,0,.4),0 12px 40px rgba(0,0,0,.5);
+    }
+    @media (prefers-color-scheme:dark) {
+      [data-theme="auto"] {
+        --bg:#0d0d0d; --card:#1a1a1a; --surface:#141414;
+        --green:#22c55e; --green-dk:#16a34a; --green-lt:#052e16; --green-bd:#166534;
+        --amber:#f59e0b; --amber-lt:#1c1200; --amber-bd:#78350f;
+        --red:#f87171; --text:#f5f5f5; --text-2:#b0b0b0;
+        --muted:#707070; --muted-lt:#505050;
+        --border:#2a2a2a; --border-2:#383838;
+        --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 20px rgba(0,0,0,.4);
+        --shadow-lg:0 2px 4px rgba(0,0,0,.4),0 12px 40px rgba(0,0,0,.5);
+      }
+    }
+
+    /* ── Base ─────────────────────────────────────────────────────────── */
+    html,body { min-height:100%; font-family:'Inter',-apple-system,sans-serif; color:var(--text); -webkit-font-smoothing:antialiased; }
+    body { background:var(--bg); transition:background .25s,color .25s; }
+    .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+    :focus-visible { outline:none; box-shadow:var(--focus); border-radius:8px; }
+
+    /* ── Nav ──────────────────────────────────────────────────────────── */
+    .nav {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 20px; height:56px;
+      background:var(--card); border-bottom:1px solid var(--border);
+      position:sticky; top:0; z-index:100;
+    }
+    .nav-logo {
+      font-size:1.15rem; font-weight:900; letter-spacing:-.04em;
+      color:var(--text); user-select:none;
+    }
+    .nav-logo .g {
+      background:linear-gradient(135deg,var(--green-dk) 0%,var(--green) 60%,#4ade80 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .nav-actions { display:flex; align-items:center; gap:4px; }
+    .nav-btn {
+      width:36px; height:36px; border-radius:10px; border:none;
+      background:transparent; color:var(--muted); font-size:.95rem;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      transition:background .15s,color .15s; position:relative;
+    }
+    .nav-btn:hover { background:var(--surface); color:var(--text); }
+    .nav-btn:focus-visible { box-shadow:var(--focus); }
+    .hcount {
+      position:absolute; top:4px; right:4px;
+      width:8px; height:8px; border-radius:50%;
+      background:var(--green); display:none;
+    }
+    .hcount.on { display:block; }
+
+    /* ── Page ─────────────────────────────────────────────────────────── */
+    .page {
+      min-height:calc(100dvh - 56px);
+      display:flex; flex-direction:column; align-items:center;
+      padding:28px 16px 80px;
+      padding-left:max(16px,env(safe-area-inset-left));
+      padding-right:max(16px,env(safe-area-inset-right));
+    }
+
+    /* ── Card ─────────────────────────────────────────────────────────── */
+    .card {
+      width:100%; max-width:520px;
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow-lg);
+      overflow:hidden;
+      animation:fadeUp .4s ease both;
+    }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+
+    /* ── Upload zone ──────────────────────────────────────────────────── */
+    #drop-label {
+      display:block; padding:44px 28px 36px; cursor:pointer;
+      position:relative; overflow:hidden;
+      transition:background .2s;
+    }
+    #drop-label::before {
+      content:''; position:absolute; inset:-2px;
+      background:conic-gradient(from var(--a),var(--green) 0%,#4ade80 25%,#86efac 50%,#4ade80 75%,var(--green) 100%);
+      border-radius:inherit; z-index:0; opacity:0; transition:opacity .3s;
+      animation:spin-border 2.5s linear infinite paused;
+    }
+    #drop-label::after { content:''; position:absolute; inset:2px; background:var(--card); border-radius:calc(var(--radius) - 2px); z-index:0; transition:background .2s; }
+    @keyframes spin-border { to{--a:360deg} }
+    #drop-label:hover::before,#drop-label:focus-within::before,#drop-label.drag-over::before { opacity:1; animation-play-state:running; }
+    #drop-label:hover::after,#drop-label:focus-within::after,#drop-label.drag-over::after { background:var(--green-lt); }
+    .upload-inner { position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; text-align:center; }
+
+    .upload-icon {
+      width:80px; height:80px; border-radius:50%;
+      background:var(--green-lt); border:1.5px solid var(--green-bd);
+      display:flex; align-items:center; justify-content:center;
+      font-size:2.2rem; margin-bottom:18px;
+      animation:float 4s ease-in-out infinite;
+    }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+    #drop-label:hover .upload-icon,#drop-label.drag-over .upload-icon { animation-play-state:paused; transform:scale(1.05); }
+
+    .upload-title { font-size:1.05rem; font-weight:800; letter-spacing:-.025em; margin-bottom:4px; }
+    .upload-sub { font-size:.82rem; color:var(--muted); margin-bottom:20px; }
+    .upload-cta {
+      display:inline-flex; align-items:center; gap:8px;
+      background:var(--green); color:#fff; padding:12px 26px;
+      border-radius:999px; font-size:.88rem; font-weight:700; margin-bottom:12px;
+      box-shadow:0 4px 14px rgba(22,163,74,.32); min-height:44px;
+      transition:background .15s,transform .12s;
+    }
+    #drop-label:hover .upload-cta { background:var(--green-dk); transform:translateY(-1px); }
+    .upload-hints { font-size:.75rem; color:var(--muted-lt); display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:center; }
+    .hint-dot { width:3px; height:3px; border-radius:50%; background:var(--muted-lt); }
+    #file-input { position:absolute; width:1px; height:1px; opacity:0; overflow:hidden; clip:rect(0,0,0,0); }
+
+    /* ── Divider ──────────────────────────────────────────────────────── */
+    .card-divider { height:1px; background:var(--border); margin:0; }
+
+    /* ── Staging ──────────────────────────────────────────────────────── */
+    #staging-view { display:none; }
+    #staging-view.visible { display:block; animation:fadeUp .2s ease both; }
+    .staging-top { display:flex; align-items:center; justify-content:space-between; padding:16px 20px 12px; gap:10px; }
+    .staging-info {}
+    .staging-title { font-size:.88rem; font-weight:700; margin-bottom:2px; }
+    .staging-sub   { font-size:.73rem; color:var(--muted); }
+    .staging-reset { background:transparent; border:1.5px solid var(--border); color:var(--muted); border-radius:8px; padding:6px 12px; font-family:inherit; font-size:.73rem; font-weight:600; cursor:pointer; transition:all .15s; min-height:34px; flex-shrink:0; }
+    .staging-reset:hover { border-color:var(--red); color:var(--red); }
+    .photo-grid { display:flex; flex-wrap:wrap; gap:8px; padding:0 20px 16px; }
+    .photo-thumb-wrap { position:relative; width:84px; height:84px; flex-shrink:0; }
+    .photo-thumb-img { width:100%; height:100%; border-radius:12px; object-fit:cover; border:1.5px solid var(--border); }
+    .thumb-badge { position:absolute; bottom:4px; left:4px; background:rgba(0,0,0,.55); backdrop-filter:blur(4px); color:#fff; border-radius:4px; font-size:.6rem; font-weight:700; padding:2px 5px; pointer-events:none; }
+    .thumb-remove { position:absolute; top:-6px; right:-6px; width:22px; height:22px; background:var(--red); color:#fff; border:2px solid var(--card); border-radius:50%; font-size:.75rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform .15s; }
+    .thumb-remove:hover { transform:scale(1.15); }
+    .add-photo-tile { width:84px; height:84px; border-radius:12px; border:1.5px dashed var(--border-2); background:var(--surface); display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; gap:2px; font-family:inherit; font-size:.7rem; font-weight:600; color:var(--muted); transition:all .18s; flex-shrink:0; }
+    .add-photo-tile:hover { border-color:var(--green); color:var(--green); background:var(--green-lt); }
+    .add-photo-tile .add-plus { font-size:1.4rem; line-height:1; font-weight:300; }
+    #file-extra { position:absolute; width:1px; height:1px; opacity:0; overflow:hidden; clip:rect(0,0,0,0); }
+
+    /* ── Ingredient editor ────────────────────────────────────────────── */
+    #ingredient-editor { display:none; }
+    #ingredient-editor.visible { display:block; animation:fadeUp .2s ease both; }
+    .ie-inner { background:var(--green-lt); border-top:1px solid var(--green-bd); border-bottom:1px solid var(--green-bd); padding:14px 20px; }
+    .ie-title { font-size:.82rem; font-weight:700; color:var(--green-dk); margin-bottom:2px; }
+    .ie-sub { font-size:.72rem; color:var(--muted); margin-bottom:10px; }
+    .ie-chips-wrap { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+    .ie-chip { display:inline-flex; align-items:center; gap:4px; background:var(--card); border:1.5px solid var(--green-bd); color:var(--text-2); border-radius:999px; padding:4px 10px 4px 11px; font-size:.76rem; font-weight:500; animation:popIn .15s ease both; }
+    @keyframes popIn { from{opacity:0;transform:scale(.88)} to{opacity:1;transform:scale(1)} }
+    .ie-chip-rm { width:15px; height:15px; border-radius:50%; background:rgba(0,0,0,.1); color:var(--muted); border:none; cursor:pointer; font-size:.6rem; display:flex; align-items:center; justify-content:center; transition:all .12s; }
+    .ie-chip-rm:hover { background:var(--red); color:#fff; }
+    .ie-add-row { display:flex; gap:7px; }
+    #ie-add-input { flex:1; border:1.5px solid var(--green-bd); border-radius:999px; padding:7px 13px; font-family:inherit; font-size:.8rem; color:var(--text); background:var(--card); outline:none; min-height:36px; transition:border-color .2s; }
+    #ie-add-input:focus { border-color:var(--green); box-shadow:var(--focus); }
+    #ie-add-input::placeholder { color:var(--muted-lt); }
+    .ie-add-btn { padding:7px 15px; border-radius:999px; border:none; min-height:36px; background:var(--green); color:#fff; font-family:inherit; font-size:.8rem; font-weight:700; cursor:pointer; white-space:nowrap; }
+    .ie-add-btn:hover { background:var(--green-dk); }
+    .ie-loading { display:flex; align-items:center; gap:10px; color:var(--muted); font-size:.84rem; }
+    .spinner { width:15px; height:15px; border:2px solid var(--border); border-top-color:var(--green); border-radius:50%; animation:spin .7s linear infinite; flex-shrink:0; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    /* ── Preferences ──────────────────────────────────────────────────── */
+    .prefs-section { background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:0; }
+    .pref-block { padding:16px 20px; }
+    .pref-label { font-size:.62rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--muted); margin-bottom:10px; display:block; }
+
+    /* ── Cuisine tiles ────────────────────────────────────────────────── */
+    .cuisine-scroll {
+      display:flex; gap:8px; overflow-x:auto; padding:0 20px 16px;
+      scrollbar-width:none; -ms-overflow-style:none; -webkit-overflow-scrolling:touch;
+    }
+    .cuisine-scroll::-webkit-scrollbar { display:none; }
+    .cuisine-tile {
+      flex-shrink:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:5px; width:68px; padding:10px 4px 9px;
+      border-radius:14px; border:1.5px solid var(--border);
+      background:var(--card); cursor:pointer; font-family:inherit;
+      transition:all .15s; min-height:68px;
+    }
+    .cuisine-tile:hover { border-color:var(--text-2); transform:translateY(-1px); }
+    .cuisine-tile.active { background:var(--text); border-color:var(--text); }
+    .ct-emoji { font-size:1.55rem; line-height:1; }
+    .ct-name  { font-size:.62rem; font-weight:600; color:var(--text-2); text-align:center; line-height:1.2; }
+    .cuisine-tile.active .ct-name { color:var(--card); }
+    .cuisine-tile:focus-visible { box-shadow:var(--focus); outline:none; }
+
+    /* ── Two-column pref grid ─────────────────────────────────────────── */
+    .pref-cols { display:grid; grid-template-columns:1fr 1fr; gap:0; border-top:1px solid var(--border); }
+    .pref-col  { padding:16px 20px; }
+    .pref-col + .pref-col { border-left:1px solid var(--border); }
+
+    /* ── Diet pills with icons ────────────────────────────────────────── */
+    .pill-wrap { display:flex; flex-wrap:wrap; gap:5px; }
+    .pill {
+      padding:6px 11px; border-radius:999px;
+      border:1.5px solid var(--border); background:var(--card);
+      font-family:inherit; font-size:.77rem; font-weight:500;
+      color:var(--text-2); cursor:pointer; transition:all .14s; white-space:nowrap;
+      min-height:34px; display:inline-flex; align-items:center; gap:5px; line-height:1;
+    }
+    .pill:hover { border-color:var(--text-2); color:var(--text); }
+    .pill.active { background:var(--text); border-color:var(--text); color:var(--card); font-weight:600; }
+
+    /* ── Servings ─────────────────────────────────────────────────────── */
+    .servings-wrap { display:flex; flex-direction:column; gap:8px; }
+    .serv-presets { display:flex; gap:5px; flex-wrap:wrap; }
+    .serv-preset {
+      padding:5px 11px; border-radius:999px; border:1.5px solid var(--border);
+      background:var(--card); font-family:inherit; font-size:.73rem; font-weight:600;
+      color:var(--muted); cursor:pointer; transition:all .14s; min-height:30px;
+      display:inline-flex; align-items:center;
+    }
+    .serv-preset:hover { border-color:var(--text-2); color:var(--text); }
+    .serv-preset.active { background:var(--text); border-color:var(--text); color:var(--card); }
+    .stepper { display:inline-flex; align-items:center; background:var(--card); border:1.5px solid var(--border); border-radius:999px; overflow:hidden; width:fit-content; }
+    .stepper button { width:34px; height:34px; border:none; background:transparent; font-size:1rem; color:var(--muted); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .14s; }
+    .stepper button:hover { background:var(--green-lt); color:var(--green); }
+    .stepper .count { font-size:.88rem; font-weight:800; min-width:34px; text-align:center; border-left:1.5px solid var(--border); border-right:1.5px solid var(--border); height:34px; display:flex; align-items:center; justify-content:center; }
+
+    /* ── Segmented control (difficulty & time) ────────────────────────── */
+    .seg-ctrl {
+      display:inline-flex; border-radius:999px; border:1.5px solid var(--border);
+      background:var(--card); overflow:hidden; width:100%;
+    }
+    .seg-btn {
+      flex:1; padding:7px 4px; border:none; background:transparent;
+      font-family:inherit; font-size:.75rem; font-weight:500; color:var(--muted);
+      cursor:pointer; transition:all .14s; display:flex; align-items:center;
+      justify-content:center; gap:4px; white-space:nowrap; min-height:34px;
+      border-right:1px solid var(--border); position:relative;
+    }
+    .seg-btn:last-child { border-right:none; }
+    .seg-btn:hover { color:var(--text); background:var(--surface); }
+    .seg-btn.active { background:var(--text); color:var(--card); font-weight:700; border-right-color:var(--text); }
+    .seg-btn.active + .seg-btn { border-left-color:transparent; }
+    /* Chef special */
+    .seg-btn[data-value="Chef"].active { background:linear-gradient(135deg,#7c3aed,#6d28d9); border-right-color:#7c3aed; }
+
+    /* ── Pantry (simplified) ──────────────────────────────────────────── */
+    .pantry-toggle-btn {
+      width:100%; display:flex; align-items:center; gap:10px;
+      padding:14px 20px; background:var(--surface);
+      border:none; border-top:1px solid var(--border);
+      cursor:pointer; font-family:inherit; transition:background .14s; min-height:48px;
+    }
+    .pantry-toggle-btn:hover { background:var(--border); }
+    .pantry-icon  { font-size:1rem; }
+    .pantry-label { flex:1; text-align:left; font-size:.86rem; font-weight:600; color:var(--text); }
+    .pantry-badge { background:var(--amber-lt); color:var(--amber); border:1px solid var(--amber-bd); border-radius:999px; font-size:.63rem; font-weight:700; padding:2px 7px; display:none; }
+    .pantry-badge.show { display:inline; }
+    .pantry-chevron { font-size:.5rem; color:var(--muted-lt); transition:transform .2s; }
+    .pantry-toggle-btn.open .pantry-chevron { transform:rotate(180deg); }
+    #pantry-body { display:none; padding:14px 20px 18px; background:var(--surface); border-top:1px solid var(--border); }
+    #pantry-body.open { display:block; }
+
+    /* Kit cards */
+    .kit-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:14px; }
+    .kit-card {
+      padding:11px 4px; border-radius:12px; border:1.5px solid var(--border);
+      background:var(--card); text-align:center; cursor:pointer; font-family:inherit;
+      font-size:.72rem; font-weight:600; color:var(--muted); line-height:1.3;
+      transition:all .15s; min-height:58px; display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+    }
+    .kit-icon { font-size:1.2rem; display:block; margin-bottom:3px; }
+    .kit-card:hover  { border-color:var(--amber); color:var(--amber); background:var(--amber-lt); transform:translateY(-1px); }
+    .kit-card.active { border-color:var(--amber); color:var(--amber); background:var(--amber-lt); }
+
+    /* Pantry tag-chip input */
+    .pantry-chips-wrap { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; min-height:0; padding:2px 0; }
+    .pantry-chip {
+      display:inline-flex; align-items:center; gap:4px;
+      background:var(--amber-lt); border:1.5px solid var(--amber-bd);
+      color:var(--amber); border-radius:999px; padding:5px 10px 5px 12px;
+      font-size:.75rem; font-weight:600; animation:popIn .15s ease both;
+    }
+    .pantry-chip-rm {
+      width:15px; height:15px; border-radius:50%; background:rgba(0,0,0,.08);
+      color:var(--amber); border:none; cursor:pointer; font-size:.6rem;
+      display:flex; align-items:center; justify-content:center; transition:all .12s;
+    }
+    .pantry-chip-rm:hover { background:var(--red); color:#fff; }
+    .pantry-input-row { display:flex; gap:7px; }
+    #pantry-tag-input {
+      flex:1; border:1.5px solid var(--border); border-radius:999px;
+      padding:8px 14px; font-family:inherit; font-size:.82rem; color:var(--text);
+      background:var(--card); outline:none; min-height:38px; transition:border-color .2s;
+    }
+    #pantry-tag-input:focus { border-color:var(--amber); box-shadow:0 0 0 3px rgba(217,119,6,.2); }
+    #pantry-tag-input::placeholder { color:var(--muted-lt); }
+    .pantry-add-btn {
+      padding:8px 15px; border-radius:999px; border:none; min-height:38px;
+      background:var(--amber); color:#fff; font-family:inherit; font-size:.82rem;
+      font-weight:700; cursor:pointer; white-space:nowrap; transition:opacity .14s;
+    }
+    .pantry-add-btn:hover { opacity:.88; }
+
+    /* ── CTA ──────────────────────────────────────────────────────────── */
+    #scan-btn-section { display:none; padding:16px 20px 20px; gap:8px; flex-direction:column; }
+    #scan-btn-section.visible { display:flex; }
+    .btn-identify {
+      width:100%; padding:11px 20px; min-height:44px;
+      background:transparent; border:1.5px solid var(--border-2); color:var(--muted);
+      border-radius:12px; font-family:inherit; font-size:.86rem; font-weight:600;
+      cursor:pointer; transition:all .14s;
+      display:flex; align-items:center; justify-content:center; gap:8px;
+    }
+    .btn-identify:hover { border-color:var(--text); color:var(--text); }
+    .btn-scan {
+      width:100%; padding:15px 20px; min-height:52px;
+      background:var(--green);
+      color:#fff; border:none; border-radius:16px; font-family:inherit;
+      font-size:.96rem; font-weight:800; cursor:pointer; letter-spacing:-.02em;
+      box-shadow:0 4px 18px rgba(22,163,74,.32);
+      transition:transform .14s,box-shadow .14s,background .14s;
+      display:flex; align-items:center; justify-content:center; gap:10px;
+    }
+    .btn-scan:hover  { background:var(--green-dk); transform:translateY(-1px); box-shadow:0 6px 24px rgba(22,163,74,.4); }
+    .btn-scan:active { transform:scale(.99); }
+    .btn-scan:focus-visible { box-shadow:var(--focus),0 4px 18px rgba(22,163,74,.32); }
+    .arrow { transition:transform .18s; }
+    .btn-scan:hover .arrow { transform:translateX(3px); }
+
+    /* ── Scanning view ────────────────────────────────────────────────── */
+    #scanning-view { display:none; }
+    .scan-img-wrap { position:relative; overflow:hidden; background:#080c12; }
+    #thumb { width:100%; max-height:260px; object-fit:cover; display:block; opacity:.82; }
+    .scan-extra-strip { display:flex; gap:6px; padding:8px 14px; background:#080c12; border-bottom:1px solid rgba(255,255,255,.06); }
+    .scan-extra-strip.hidden { display:none; }
+    .sep-thumb { width:40px; height:40px; border-radius:7px; object-fit:cover; border:1.5px solid rgba(255,255,255,.18); opacity:.65; flex-shrink:0; }
+    .sep-label { display:flex; align-items:center; color:rgba(255,255,255,.35); font-size:.68rem; font-weight:600; padding-left:2px; }
+    .scan-beam { position:absolute; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,rgba(74,222,128,.3) 10%,#4ade80 35%,#16a34a 50%,#4ade80 65%,rgba(74,222,128,.3) 90%,transparent); box-shadow:0 0 12px 3px rgba(74,222,128,.45); display:none; }
+    .scan-beam.active { display:block; animation:scanbeam 1.9s ease-in-out infinite; }
+    @keyframes scanbeam { 0%{top:-1%;opacity:0} 5%{opacity:1} 95%{opacity:1} 100%{top:101%;opacity:0} }
+    .scan-grid { position:absolute; inset:0; background-image:linear-gradient(rgba(74,222,128,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(74,222,128,.04) 1px,transparent 1px); background-size:28px 28px; display:none; }
+    .scan-grid.active { display:block; }
+    .scan-caption { position:absolute; bottom:0; left:0; right:0; padding:36px 14px 14px; background:linear-gradient(to bottom,transparent,rgba(0,0,0,.65)); }
+    .scan-pill { display:inline-flex; align-items:center; gap:7px; background:rgba(0,0,0,.55); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.1); color:#fff; border-radius:999px; padding:6px 14px; font-size:.78rem; font-weight:600; }
+    .scan-dot { width:6px; height:6px; background:#4ade80; border-radius:50%; display:none; }
+    .scan-dot.pulse { display:block; animation:pulse 1s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.6)} }
+    .dot-anim::after { content:''; animation:dots 1.4s steps(4,end) infinite; }
+    @keyframes dots { 0%{content:''} 25%{content:'.'} 50%{content:'..'} 75%{content:'...'} 100%{content:''} }
+    .progress-wrap { padding:0 20px; }
+    .progress-track { height:2px; background:var(--border); border-radius:99px; overflow:hidden; margin:12px 0 4px; }
+    .progress-bar { height:100%; background:var(--green); border-radius:99px; width:0%; transition:width .4s ease; }
+    .progress-bar.indeterminate { animation:indeterminate 1.6s ease-in-out infinite; }
+    @keyframes indeterminate { 0%{transform:translateX(-100%);width:55%} 100%{transform:translateX(230%);width:55%} }
+
+    /* ── Recipe output ────────────────────────────────────────────────── */
+    #recipe-output { padding:16px 20px 22px; min-height:60px; }
+    .cursor { display:inline-block; width:2px; height:1em; background:var(--green); margin-left:2px; vertical-align:text-bottom; animation:blink .75s step-end infinite; }
+    @keyframes blink { 50%{opacity:0} }
+
+    .r-see { background:var(--green-lt); border:1px solid var(--green-bd); border-radius:12px; padding:11px 14px; margin:4px 0 14px; }
+    .r-see-lbl { font-size:.62rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--green-dk); display:block; margin-bottom:7px; }
+    .r-chips { display:flex; flex-wrap:wrap; gap:5px; }
+    .r-chip { background:var(--card); border:1px solid var(--green-bd); color:var(--text-2); border-radius:999px; padding:3px 10px; font-size:.75rem; font-weight:500; }
+
+    .r-title { font-size:1.3rem; font-weight:900; letter-spacing:-.03em; line-height:1.2; color:var(--text); margin:6px 0 4px; }
+    .r-subtitle { font-size:.84rem; color:var(--muted); font-style:italic; margin-bottom:13px; line-height:1.55; }
+    .r-head { font-size:.62rem; font-weight:700; text-transform:uppercase; letter-spacing:.09em; color:var(--muted-lt); margin:14px 0 7px; }
+
+    .r-step { display:flex; align-items:flex-start; gap:11px; margin:5px 0; padding:10px 12px; background:var(--surface); border-radius:11px; border:1px solid transparent; transition:border-color .14s,background .14s; }
+    .r-step:hover { border-color:var(--border); background:var(--card); }
+    .r-step.speaking { border-color:var(--green); background:var(--green-lt); }
+    .r-num { flex-shrink:0; width:22px; height:22px; background:var(--text); color:var(--card); border-radius:50%; font-size:.66rem; font-weight:800; display:flex; align-items:center; justify-content:center; margin-top:2px; }
+    .r-step.speaking .r-num { background:var(--green); }
+    .r-txt { font-size:.87rem; line-height:1.65; color:var(--text-2); }
+    .r-txt strong { font-weight:700; color:var(--text); }
+
+    .r-meta-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+    .r-timing  { display:inline-flex; align-items:center; gap:6px; background:var(--surface); border:1.5px solid var(--border); border-radius:999px; padding:6px 13px; font-size:.78rem; font-weight:600; color:var(--text-2); }
+    .r-calories { display:inline-flex; align-items:center; gap:6px; background:#fff7ed; border:1.5px solid #fed7aa; border-radius:999px; padding:6px 13px; font-size:.78rem; font-weight:600; color:#c2410c; }
+    [data-theme="dark"] .r-calories { background:#1c0a00; border-color:#7c2d12; color:#fb923c; }
+    @media(prefers-color-scheme:dark) { [data-theme="auto"] .r-calories { background:#1c0a00; border-color:#7c2d12; color:#fb923c; } }
+    .r-p { font-size:.88rem; line-height:1.75; color:var(--text); margin:2px 0; }
+    .r-p strong { font-weight:700; }
+    .r-p em { font-style:italic; color:var(--muted); }
+    .r-hr { border:none; border-top:1px solid var(--border); margin:12px 0; }
+
+    /* ── Result footer ────────────────────────────────────────────────── */
+    #result-footer { display:none; padding:12px 20px 20px; border-top:1px solid var(--border); }
+    .action-row { display:flex; gap:7px; flex-wrap:wrap; }
+    .btn { display:inline-flex; align-items:center; gap:6px; padding:9px 15px; border-radius:11px; font-family:inherit; font-size:.81rem; font-weight:700; cursor:pointer; border:none; transition:opacity .14s,transform .12s,background .14s; min-height:42px; white-space:nowrap; }
+    .btn:active { transform:scale(.97); }
+    .btn:focus-visible { box-shadow:var(--focus); }
+    .btn-primary { background:var(--green); color:#fff; box-shadow:0 3px 12px rgba(22,163,74,.28); }
+    .btn-primary:hover { background:var(--green-dk); }
+    .btn-ghost   { background:transparent; border:1.5px solid var(--border-2); color:var(--muted); }
+    .btn-ghost:hover { background:var(--surface); color:var(--text); }
+    .btn-retry   { background:var(--surface); border:1.5px solid var(--border); color:var(--text-2); }
+    .btn-retry:hover { border-color:var(--green); color:var(--green); }
+    .btn-speak   { background:var(--surface); border:1.5px solid var(--border); color:var(--text-2); display:none; }
+    .btn-speak:hover { border-color:var(--green); color:var(--green); }
+    .btn-speak.speaking { background:var(--green-lt); border-color:var(--green); color:var(--green-dk); }
+    .error-box { background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; border-radius:11px; padding:12px 14px; font-size:.82rem; }
+    [data-theme="dark"] .error-box { background:#1c0a0a; border-color:#7f1d1d; color:#fca5a5; }
+    @media(prefers-color-scheme:dark) { [data-theme="auto"] .error-box { background:#1c0a0a; border-color:#7f1d1d; color:#fca5a5; } }
+
+    /* ── History sheet ────────────────────────────────────────────────── */
+    .h-overlay { position:fixed; inset:0; background:rgba(0,0,0,.4); backdrop-filter:blur(4px); z-index:200; display:flex; align-items:flex-end; justify-content:center; animation:fadeIn .2s ease both; }
+    .h-overlay.hidden { display:none; }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    .h-sheet { width:100%; max-width:520px; background:var(--card); border-radius:22px 22px 0 0; max-height:76vh; overflow-y:auto; animation:slideUp .22s ease both; }
+    @keyframes slideUp { from{transform:translateY(100%)} to{transform:none} }
+    .h-top { display:flex; align-items:center; justify-content:space-between; padding:18px 20px 12px; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--card); z-index:1; }
+    .h-top h2 { font-size:.96rem; font-weight:800; }
+    .h-close { width:28px; height:28px; border-radius:50%; border:1.5px solid var(--border); background:var(--surface); color:var(--muted); font-size:.75rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .14s; }
+    .h-close:hover { border-color:var(--red); color:var(--red); }
+    .h-empty { padding:36px 20px; text-align:center; color:var(--muted); font-size:.86rem; }
+    .h-item { padding:14px 20px; border-bottom:1px solid var(--border); cursor:pointer; display:flex; align-items:center; gap:12px; transition:background .14s; }
+    .h-item:hover { background:var(--surface); }
+    .h-item:last-child { border-bottom:none; }
+    .hi-icon { font-size:1.4rem; flex-shrink:0; }
+    .hi-body { flex:1; min-width:0; }
+    .hi-title { font-size:.86rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .hi-meta  { font-size:.7rem; color:var(--muted); margin-top:2px; display:flex; gap:6px; flex-wrap:wrap; }
+    .hi-tag   { background:var(--green-lt); color:var(--green-dk); border:1px solid var(--green-bd); border-radius:999px; padding:1px 7px; font-size:.62rem; font-weight:600; }
+    .hi-time  { color:var(--muted-lt); }
+    .hi-arr   { color:var(--muted-lt); font-size:.8rem; }
+
+    /* ── Footer tip ───────────────────────────────────────────────────── */
+    .tip { margin-top:18px; font-size:.7rem; color:var(--muted-lt); text-align:center; max-width:320px; animation:fadeUp .4s .1s ease both; line-height:1.6; }
+
+    /* ── Reduced motion ───────────────────────────────────────────────── */
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; } }
+
+    /* ── Mobile ───────────────────────────────────────────────────────── */
+    @media(max-width:480px) {
+      .page { padding:20px 12px 72px; }
+      #drop-label { padding:36px 16px 30px; }
+      .upload-icon { width:70px; height:70px; font-size:2rem; }
+      .pref-cols { grid-template-columns:1fr; }
+      .pref-col + .pref-col { border-left:none; border-top:1px solid var(--border); }
+      .pref-col  { padding:14px 16px; }
+      .pref-block { padding:14px 16px; }
+      .cuisine-scroll { padding-left:16px; padding-right:16px; }
+      .kit-grid { grid-template-columns:repeat(3,1fr); }
+      .photo-thumb-wrap,.add-photo-tile { width:76px; height:76px; }
+      .action-row .btn { flex:1; justify-content:center; }
+      .r-title { font-size:1.12rem; }
+      #scan-btn-section,#recipe-output,#result-footer,.staging-top,.photo-grid,.progress-wrap { padding-left:16px; padding-right:16px; }
+      .ie-inner { padding:12px 16px; }
+      #pantry-body { padding:12px 16px 16px; }
+      .seg-btn { font-size:.7rem; padding:7px 2px; }
+    }
+  </style>
+</head>
+<body>
+<div id="live-status" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+
+<!-- ── Nav ── -->
+<nav class="nav">
+  <div class="nav-logo" role="heading" aria-level="1">Fridge<span class="g">Brain</span> 🧠</div>
+  <div class="nav-actions">
+    <button class="nav-btn" id="btn-history" onclick="openHistory()" aria-label="Recipe history">
+      📚
+      <span class="hcount" id="hcount" aria-hidden="true"></span>
+    </button>
+    <button class="nav-btn" id="btn-theme" onclick="cycleTheme()" aria-label="Toggle colour scheme">🌙</button>
+  </div>
+</nav>
+
+<!-- ── Page ── -->
+<div class="page">
+
+  <main class="card" id="main-card">
+
+    <!-- ① Drop zone -->
+    <label id="drop-label" for="file-input" aria-label="Upload fridge photo">
+      <div class="upload-inner">
+        <div class="upload-icon" aria-hidden="true">📸</div>
+        <p class="upload-title">Drop your fridge photo here</p>
+        <p class="upload-sub" id="paste-hint">drag &amp; drop &nbsp;·&nbsp; paste (⌘V)</p>
+        <span class="upload-cta" aria-hidden="true">Choose photo</span>
+        <p class="upload-hints">
+          <span>JPG</span><span class="hint-dot"></span>
+          <span>PNG</span><span class="hint-dot"></span>
+          <span>WEBP</span><span class="hint-dot"></span>
+          <span>up to 20 MB</span>
+        </p>
+      </div>
+    </label>
+    <input type="file" id="file-input" accept="image/*" onchange="handleFile(this.files[0])">
+
+    <!-- ② Staging -->
+    <div id="staging-view" role="region" aria-label="Photos staged">
+      <div class="card-divider"></div>
+      <div class="staging-top">
+        <div class="staging-info">
+          <p class="staging-title">📷 <span id="staging-count" aria-live="polite">1 photo added</span></p>
+          <p class="staging-sub" id="staging-sub">Add up to 3 more angles for better detection</p>
+        </div>
+        <button class="staging-reset" onclick="resetToUpload()">✕ Start over</button>
+      </div>
+      <div id="photo-grid" class="photo-grid" role="list">
+        <label class="add-photo-tile" id="add-photo-tile" for="file-extra" aria-label="Add another photo">
+          <span class="add-plus" aria-hidden="true">+</span>
+          <span>Add photo</span>
+        </label>
+      </div>
+      <input type="file" id="file-extra" accept="image/*" multiple onchange="handleExtraFiles(this.files)">
+    </div>
+
+    <!-- ③ Ingredient editor -->
+    <div id="ingredient-editor" role="region" aria-label="Edit ingredients">
+      <div class="ie-inner">
+        <p class="ie-title">✏️ Found these ingredients</p>
+        <p class="ie-sub">Remove anything you don't want, or add what's missing</p>
+        <div id="ie-chips" class="ie-chips-wrap" role="list"></div>
+        <div class="ie-add-row">
+          <input type="text" id="ie-add-input" placeholder="add an ingredient…">
+          <button class="ie-add-btn" onclick="ieAddIngredient()">Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ④–⑦ Preferences -->
+    <div class="prefs-section">
+
+      <!-- Cuisine tiles -->
+      <div class="pref-block" id="sec-cuisine" style="padding-bottom:4px;">
+        <span class="pref-label">Cuisine style</span>
+      </div>
+      <div class="cuisine-scroll" id="cuisine-pills" role="group" aria-label="Cuisine style">
+        <button class="cuisine-tile active" data-value="Any"           aria-pressed="true" ><span class="ct-emoji">✨</span><span class="ct-name">Any</span></button>
+        <button class="cuisine-tile"        data-value="Italian"       aria-pressed="false"><span class="ct-emoji">🍕</span><span class="ct-name">Italian</span></button>
+        <button class="cuisine-tile"        data-value="Mexican"       aria-pressed="false"><span class="ct-emoji">🌮</span><span class="ct-name">Mexican</span></button>
+        <button class="cuisine-tile"        data-value="Indian"        aria-pressed="false"><span class="ct-emoji">🍛</span><span class="ct-name">Indian</span></button>
+        <button class="cuisine-tile"        data-value="South Indian"  aria-pressed="false"><span class="ct-emoji">🌴</span><span class="ct-name">South Indian</span></button>
+        <button class="cuisine-tile"        data-value="Asian"         aria-pressed="false"><span class="ct-emoji">🥢</span><span class="ct-name">Asian</span></button>
+        <button class="cuisine-tile"        data-value="Mediterranean" aria-pressed="false"><span class="ct-emoji">🥙</span><span class="ct-name">Mediter­ranean</span></button>
+        <button class="cuisine-tile"        data-value="American"      aria-pressed="false"><span class="ct-emoji">🍔</span><span class="ct-name">American</span></button>
+      </div>
+
+      <!-- Diet + Servings -->
+      <div class="pref-cols" id="pref-row-1">
+        <div class="pref-col" id="sec-diet">
+          <span class="pref-label">Diet</span>
+          <div class="pill-wrap" id="diet-pills" role="group" aria-label="Dietary preference">
+            <button class="pill active" data-value="None"        aria-pressed="true" >All</button>
+            <button class="pill"        data-value="Vegetarian"  aria-pressed="false">🌱 Vegetarian</button>
+            <button class="pill"        data-value="Vegan"       aria-pressed="false">🌿 Vegan</button>
+            <button class="pill"        data-value="Gluten-Free" aria-pressed="false">🌾 Gluten-Free</button>
+          </div>
+        </div>
+        <div class="pref-col" id="sec-servings">
+          <span class="pref-label">Servings</span>
+          <div class="servings-wrap">
+            <div class="serv-presets" id="serv-presets" role="group" aria-label="Serving presets">
+              <button class="serv-preset" data-n="1"  aria-pressed="false">Solo</button>
+              <button class="serv-preset active" data-n="2" aria-pressed="true" >Couple</button>
+              <button class="serv-preset" data-n="4"  aria-pressed="false">Family</button>
+              <button class="serv-preset" data-n="6"  aria-pressed="false">Party</button>
+            </div>
+            <div class="stepper" role="group" aria-label="Exact servings">
+              <button id="serv-down" aria-label="Decrease">−</button>
+              <span class="count" id="serv-count" aria-live="polite">2</span>
+              <button id="serv-up"   aria-label="Increase">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Difficulty + Time -->
+      <div class="pref-cols" id="pref-row-2">
+        <div class="pref-col" id="sec-difficulty">
+          <span class="pref-label">Difficulty</span>
+          <div class="seg-ctrl" id="diff-pills" role="group" aria-label="Difficulty">
+            <button class="seg-btn"        data-value="Easy"   aria-pressed="false">Easy</button>
+            <button class="seg-btn active" data-value="Medium" aria-pressed="true" >Medium</button>
+            <button class="seg-btn"        data-value="Chef"   aria-pressed="false">Chef 👨‍🍳</button>
+          </div>
+        </div>
+        <div class="pref-col" id="sec-time">
+          <span class="pref-label">Time I have</span>
+          <div class="seg-ctrl" id="time-pills" role="group" aria-label="Time budget">
+            <button class="seg-btn"        data-value="15"  aria-pressed="false">15m</button>
+            <button class="seg-btn"        data-value="30"  aria-pressed="false">30m</button>
+            <button class="seg-btn"        data-value="60"  aria-pressed="false">1h</button>
+            <button class="seg-btn active" data-value="Any" aria-pressed="true" >Any</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /prefs-section -->
+
+    <!-- ⑧ Pantry -->
+    <button class="pantry-toggle-btn" id="pantry-toggle" aria-expanded="false" aria-controls="pantry-body" onclick="togglePantry()">
+      <span class="pantry-icon" aria-hidden="true">🧺</span>
+      <span class="pantry-label">Pantry staples</span>
+      <span class="pantry-badge" id="pantry-badge" aria-live="polite"></span>
+      <span class="pantry-chevron" aria-hidden="true">▼</span>
+    </button>
+    <div id="pantry-body" role="region" aria-label="Pantry">
+      <div class="kit-grid" role="group" aria-label="Quick kits">
+        <button class="kit-card" data-kit="NorthIndian" aria-pressed="false"><span class="kit-icon" aria-hidden="true">🍛</span>North Indian</button>
+        <button class="kit-card" data-kit="SouthIndian" aria-pressed="false"><span class="kit-icon" aria-hidden="true">🌴</span>South Indian</button>
+        <button class="kit-card" data-kit="Italian"     aria-pressed="false"><span class="kit-icon" aria-hidden="true">🍝</span>Italian</button>
+        <button class="kit-card" data-kit="Asian"       aria-pressed="false"><span class="kit-icon" aria-hidden="true">🥢</span>Asian</button>
+        <button class="kit-card" data-kit="Mexican"     aria-pressed="false"><span class="kit-icon" aria-hidden="true">🌮</span>Mexican</button>
+        <button class="kit-card" data-kit="Basic"       aria-pressed="false"><span class="kit-icon" aria-hidden="true">🧂</span>Basic</button>
+      </div>
+      <div class="pantry-chips-wrap" id="pantry-chips"></div>
+      <div class="pantry-input-row">
+        <input type="text" id="pantry-tag-input" placeholder="e.g. ghee, soy sauce, pasta…" aria-label="Add pantry item">
+        <button class="pantry-add-btn" id="pantry-add-btn" onclick="pantryAddTag()">Add</button>
+      </div>
+    </div>
+
+    <!-- ⑨ CTA -->
+    <div id="scan-btn-section">
+      <button class="btn-identify" id="btn-identify">🔍 Check ingredients first</button>
+      <button class="btn-scan" id="btn-scan">🍳 Get My Recipe <span class="arrow" aria-hidden="true">→</span></button>
+    </div>
+
+    <!-- ⑩ Scan view -->
+    <div id="scanning-view" role="region" aria-label="Recipe result">
+      <div class="scan-img-wrap">
+        <img id="thumb" src="" alt="Your fridge being scanned">
+        <div class="scan-grid" id="scan-grid" aria-hidden="true"></div>
+        <div class="scan-beam" id="scan-beam" aria-hidden="true"></div>
+        <div class="scan-caption" aria-hidden="true">
+          <div class="scan-pill">
+            <span class="scan-dot" id="scan-dot"></span>
+            <span id="scan-label">Scanning your fridge<span class="dot-anim"></span></span>
+          </div>
+        </div>
+      </div>
+      <div class="scan-extra-strip hidden" id="scan-extra-strip" aria-hidden="true"></div>
+      <div class="progress-wrap" aria-hidden="true">
+        <div class="progress-track"><div class="progress-bar indeterminate" id="progress-bar"></div></div>
+      </div>
+      <div id="recipe-output" aria-live="polite"></div>
+    </div>
+
+    <!-- ⑪ Result footer -->
+    <div id="result-footer">
+      <div class="action-row">
+        <button class="btn btn-primary" id="btn-another">📸 New scan</button>
+        <button class="btn btn-retry"   id="btn-retry"  >✨ Try different</button>
+        <button class="btn btn-speak"   id="btn-speak"  >🔊 Read aloud</button>
+        <button class="btn btn-ghost"   id="btn-copy"   >📋 Copy</button>
+      </div>
+    </div>
+
+  </main>
+
+  <p class="tip">💡 Wide shot of the whole fridge + a close-up of drawers = best results</p>
+
+</div>
+
+<!-- History sheet -->
+<div id="h-overlay" class="h-overlay hidden" role="dialog" aria-modal="true" aria-label="Recipe history">
+  <div class="h-sheet">
+    <div class="h-top">
+      <h2>Recent Recipes</h2>
+      <button class="h-close" onclick="closeHistory()" aria-label="Close">✕</button>
+    </div>
+    <div id="h-list"></div>
+  </div>
+</div>
+
+<script>
+// ── Refs ───────────────────────────────────────────────────────────────────
+const dropLabel   = document.getElementById('drop-label')
+const stagingView = document.getElementById('staging-view')
+const ingEditor   = document.getElementById('ingredient-editor')
+const scanBtnSec  = document.getElementById('scan-btn-section')
+const scanView    = document.getElementById('scanning-view')
+const thumb       = document.getElementById('thumb')
+const scanBeam    = document.getElementById('scan-beam')
+const scanGrid    = document.getElementById('scan-grid')
+const scanDot     = document.getElementById('scan-dot')
+const scanLabel   = document.getElementById('scan-label')
+const progressBar = document.getElementById('progress-bar')
+const recipeOut   = document.getElementById('recipe-output')
+const resultFoot  = document.getElementById('result-footer')
+// pantry now uses tag-chip system (no textarea)
+const photoGrid   = document.getElementById('photo-grid')
+const addTile     = document.getElementById('add-photo-tile')
+const extraStrip  = document.getElementById('scan-extra-strip')
+const liveStatus  = document.getElementById('live-status')
+
+function say(msg){ liveStatus.textContent=''; setTimeout(()=>{ liveStatus.textContent=msg },50) }
+
+// ── OS paste hint ──────────────────────────────────────────────────────────
+;(()=>{
+  const mac = /Mac/.test(navigator.platform||navigator.userAgent)
+  document.getElementById('paste-hint').innerHTML =
+    'drag &amp; drop &nbsp;·&nbsp; paste ('+(mac?'⌘V':'Ctrl+V')+')'
+})()
+
+// ── State ──────────────────────────────────────────────────────────────────
+let pendingFiles=[], pendingURLs=[], recipeText='', ieItems=[], speakOn=false
+let selCuisine='Any', selDiet='None', selDiff='Medium', selTime='Any', servings=2
+
+const PREF_SECTION = document.querySelector('.prefs-section')
+const PANTRY_BTN   = document.getElementById('pantry-toggle')
+const PANTRY_BODY  = document.getElementById('pantry-body')
+
+// ── Dark mode ──────────────────────────────────────────────────────────────
+let theme = localStorage.getItem('fb_theme')||'auto'
+function applyTheme(t){
+  document.documentElement.setAttribute('data-theme',t)
+  document.getElementById('btn-theme').textContent = t==='dark'?'☀️':'🌙'
+  localStorage.setItem('fb_theme',t); theme=t
+}
+function cycleTheme(){ applyTheme(['auto','light','dark'][(['auto','light','dark'].indexOf(theme)+1)%3]) }
+applyTheme(theme)
+
+// ── Pantry ─────────────────────────────────────────────────────────────────
+window.togglePantry=()=>{
+  const btn=document.getElementById('pantry-toggle'), body=document.getElementById('pantry-body')
+  const open=btn.classList.toggle('open'); body.classList.toggle('open',open); btn.setAttribute('aria-expanded',open)
+}
+
+// ── Pills (diet) ───────────────────────────────────────────────────────────
+function initPills(id,cb){
+  document.getElementById(id).addEventListener('click',e=>{
+    const p=e.target.closest('.pill'); if(!p) return
+    document.querySelectorAll('#'+id+' .pill').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false')})
+    p.classList.add('active'); p.setAttribute('aria-pressed','true'); cb(p.dataset.value)
+  })
+}
+initPills('diet-pills', v=>{ selDiet=v })
+
+// ── Cuisine tiles ──────────────────────────────────────────────────────────
+document.getElementById('cuisine-pills').addEventListener('click',e=>{
+  const t=e.target.closest('.cuisine-tile'); if(!t) return
+  document.querySelectorAll('#cuisine-pills .cuisine-tile').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false')})
+  t.classList.add('active'); t.setAttribute('aria-pressed','true'); selCuisine=t.dataset.value
+})
+
+// ── Segmented controls (difficulty + time) ─────────────────────────────────
+function initSeg(id,cb){
+  document.getElementById(id).addEventListener('click',e=>{
+    const b=e.target.closest('.seg-btn'); if(!b) return
+    document.querySelectorAll('#'+id+' .seg-btn').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false')})
+    b.classList.add('active'); b.setAttribute('aria-pressed','true'); cb(b.dataset.value)
+  })
+}
+initSeg('diff-pills', v=>{ selDiff=v })
+initSeg('time-pills', v=>{ selTime=v })
+
+// ── Servings ───────────────────────────────────────────────────────────────
+function setServings(n){
+  servings=n; document.getElementById('serv-count').textContent=n
+  document.querySelectorAll('.serv-preset').forEach(b=>{
+    const match=parseInt(b.dataset.n)===n
+    b.classList.toggle('active',match); b.setAttribute('aria-pressed',match)
+  })
+}
+document.getElementById('serv-presets').addEventListener('click',e=>{
+  const b=e.target.closest('.serv-preset'); if(!b) return
+  setServings(parseInt(b.dataset.n))
+})
+document.getElementById('serv-down').addEventListener('click',()=>{ if(servings>1) setServings(servings-1) })
+document.getElementById('serv-up').addEventListener('click',()=>{ if(servings<12) setServings(servings+1) })
+
+// ── Pantry (tag-chip system) ───────────────────────────────────────────────
+const KITS={
+  NorthIndian:'atta, besan, rice, poha, rajma, chana dal, moong dal, toor dal, cumin seeds, mustard seeds, coriander powder, turmeric, garam masala, red chili powder, kasuri methi, hing, tamarind, ghee, mustard oil',
+  SouthIndian:'rice, idli rava, rava/sooji, urad dal, toor dal, chana dal, poha, mustard seeds, curry leaves, sambar masala, rasam powder, tamarind, coconut, coconut oil, sesame oil, hing, turmeric',
+  Italian:    'spaghetti, penne, olive oil, canned tomatoes, parmesan, garlic, dried basil, dried oregano, breadcrumbs, balsamic vinegar',
+  Asian:      'jasmine rice, rice noodles, soy sauce, sesame oil, fish sauce, oyster sauce, rice vinegar, chili paste, coconut milk, tofu, ginger paste',
+  Mexican:    'corn tortillas, flour tortillas, black beans, pinto beans, cumin, smoked paprika, chili powder, salsa, rice, dried oregano',
+  Basic:      'flour, sugar, salt, black pepper, olive oil, butter, garlic, onions, eggs, milk, stock cubes, soy sauce, vinegar',
+}
+
+let pantryTags = []
+
+function renderPantryChips(){
+  const wrap = document.getElementById('pantry-chips')
+  wrap.innerHTML = ''
+  pantryTags.forEach((tag,i)=>{
+    const chip = document.createElement('div')
+    chip.className = 'pantry-chip'
+    chip.innerHTML = `<span>${esc(tag)}</span><button class="pantry-chip-rm" aria-label="Remove ${esc(tag)}">×</button>`
+    chip.querySelector('.pantry-chip-rm').addEventListener('click',()=>{ pantryTags.splice(i,1); renderPantryChips(); updBadge() })
+    wrap.appendChild(chip)
+  })
+}
+function pantryAddItems(csv){
+  csv.split(',').map(s=>s.trim()).filter(Boolean).forEach(v=>{
+    if(v && !pantryTags.map(t=>t.toLowerCase()).includes(v.toLowerCase())) pantryTags.push(v)
+  })
+  renderPantryChips(); updBadge()
+}
+function pantryRemoveItems(csv){
+  const rm = new Set(csv.split(',').map(s=>s.trim().toLowerCase()))
+  pantryTags = pantryTags.filter(t=>!rm.has(t.toLowerCase()))
+  renderPantryChips(); updBadge()
+}
+window.pantryAddTag = function(){
+  const inp = document.getElementById('pantry-tag-input')
+  const val = inp.value.trim(); if(!val) return
+  pantryAddItems(val); inp.value=''
+}
+document.getElementById('pantry-tag-input').addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();pantryAddTag()} })
+document.getElementById('pantry-add-btn').addEventListener('click', pantryAddTag)
+
+function updBadge(){
+  const n=pantryTags.length, b=document.getElementById('pantry-badge')
+  b.textContent=n?n+' item'+(n>1?'s':''):''; b.classList.toggle('show',n>0)
+}
+// Pantry value for form
+const pantryItems = ()=> pantryTags.join(', ')
+
+document.querySelectorAll('.kit-card').forEach(c=>c.addEventListener('click',()=>{
+  const on=c.classList.toggle('active'); c.setAttribute('aria-pressed',on)
+  if(on) pantryAddItems(KITS[c.dataset.kit]); else pantryRemoveItems(KITS[c.dataset.kit])
+}))
+
+// ── Photos ─────────────────────────────────────────────────────────────────
+function addFiles(files){
+  const imgs=Array.from(files).filter(f=>f.type.startsWith('image/')); if(!imgs.length)return
+  const room=4-pendingFiles.length
+  imgs.slice(0,room).forEach(f=>{ pendingFiles.push(f); pendingURLs.push(URL.createObjectURL(f)) })
+  renderGrid()
+}
+function renderGrid(){
+  photoGrid.querySelectorAll('.photo-thumb-wrap').forEach(el=>el.remove())
+  const n=pendingFiles.length
+  document.getElementById('staging-count').textContent=n+' photo'+(n>1?'s':'')+' added'
+  document.getElementById('staging-sub').textContent=n<4?'Add up to '+(4-n)+' more angle'+((4-n)>1?'s':'')+' for better detection':'4 photos — AI will scan all'
+  pendingURLs.forEach((url,i)=>{
+    const wrap=document.createElement('div'); wrap.className='photo-thumb-wrap'; wrap.setAttribute('role','listitem')
+    const img=document.createElement('img'); img.className='photo-thumb-img'; img.src=url; img.alt='Photo '+(i+1)
+    const badge=document.createElement('span'); badge.className='thumb-badge'; badge.setAttribute('aria-hidden','true'); badge.textContent='Photo '+(i+1)
+    const rm=document.createElement('button'); rm.className='thumb-remove'; rm.innerHTML='×'; rm.setAttribute('aria-label','Remove photo '+(i+1))
+    rm.addEventListener('click',e=>{ e.preventDefault(); removePhoto(i) })
+    wrap.append(img,badge,rm); photoGrid.insertBefore(wrap,addTile)
+  })
+  addTile.style.display=n<4?'flex':'none'
+}
+function removePhoto(i){ URL.revokeObjectURL(pendingURLs[i]); pendingFiles.splice(i,1); pendingURLs.splice(i,1); if(!pendingFiles.length)resetToUpload(); else renderGrid() }
+function showStaging(){ dropLabel.setAttribute('hidden',''); stagingView.classList.add('visible'); scanBtnSec.classList.add('visible'); renderGrid() }
+window.resetToUpload=function(){ pendingURLs.forEach(u=>URL.revokeObjectURL(u)); pendingFiles=[]; pendingURLs=[]; ieItems=[]
+  photoGrid.querySelectorAll('.photo-thumb-wrap').forEach(el=>el.remove())
+  stagingView.classList.remove('visible'); scanBtnSec.classList.remove('visible'); ingEditor.classList.remove('visible')
+  dropLabel.removeAttribute('hidden')
+  document.getElementById('file-input').value=''; document.getElementById('file-extra').value=''
+  document.getElementById('btn-scan').innerHTML='🍳 Get My Recipe <span class="arrow" aria-hidden="true">→</span>'
+  document.getElementById('btn-identify').innerHTML='🔍 Check ingredients first'
+}
+window.handleFile=function(file){ if(!file||!file.type.startsWith('image/'))return; pendingFiles=[]; pendingURLs=[]; addFiles([file]); showStaging() }
+window.handleExtraFiles=function(files){ addFiles(files); document.getElementById('file-extra').value='' }
+
+// ── Drag & paste ───────────────────────────────────────────────────────────
+dropLabel.addEventListener('dragover',e=>{ e.preventDefault(); dropLabel.classList.add('drag-over') })
+dropLabel.addEventListener('dragleave',()=>dropLabel.classList.remove('drag-over'))
+dropLabel.addEventListener('drop',e=>{ e.preventDefault(); dropLabel.classList.remove('drag-over'); const f=e.dataTransfer?.files?.[0]; if(f)handleFile(f) })
+document.addEventListener('dragover',e=>{ if(stagingView.classList.contains('visible'))e.preventDefault() })
+document.addEventListener('drop',e=>{ if(!stagingView.classList.contains('visible'))return; e.preventDefault(); addFiles(e.dataTransfer?.files||[]) })
+document.addEventListener('paste',e=>{ const item=[...e.clipboardData.items].find(i=>i.type.startsWith('image/')); if(!item)return; const f=item.getAsFile(); if(!f)return; if(!pendingFiles.length){addFiles([f]);showStaging()}else addFiles([f]) })
+
+// ── Identify ───────────────────────────────────────────────────────────────
+document.getElementById('btn-identify').addEventListener('click',async()=>{
+  if(!pendingFiles.length)return
+  const btn=document.getElementById('btn-identify')
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Identifying…'
+  ingEditor.innerHTML='<div class="ie-inner"><div class="ie-loading"><span class="spinner"></span> Scanning ingredients from your photos…</div></div>'
+  ingEditor.classList.add('visible')
+  try{
+    const form=new FormData(); pendingFiles.forEach(f=>form.append('images',f))
+    const res=await fetch('/api/identify',{method:'POST',body:form}), data=await res.json()
+    if(data.error)throw new Error(data.error)
+    ieItems=data.ingredients; renderIEChips()
+    document.getElementById('btn-scan').innerHTML='🍳 Cook with these <span class="arrow" aria-hidden="true">→</span>'
+    say(ieItems.length+' ingredients found. Edit and tap Cook with these.')
+  }catch(err){ ingEditor.innerHTML='<div class="ie-inner"><div class="ie-loading" style="color:var(--red)">❌ '+err.message+'</div></div>' }
+  btn.disabled=false; btn.innerHTML='🔍 Re-scan ingredients'
+})
+
+function renderIEChips(){
+  ingEditor.innerHTML=`<div class="ie-inner"><p class="ie-title">✏️ Found ${ieItems.length} ingredients</p><p class="ie-sub">Tap × to remove, or add what's missing</p><div id="ie-chips" class="ie-chips-wrap" role="list"></div><div class="ie-add-row"><input type="text" id="ie-add-input" placeholder="add an ingredient…"><button class="ie-add-btn" onclick="ieAddIngredient()">Add</button></div></div>`
+  const wrap=document.getElementById('ie-chips')
+  ieItems.forEach((item,i)=>{
+    const chip=document.createElement('div'); chip.className='ie-chip'; chip.setAttribute('role','listitem')
+    chip.innerHTML=`<span>${esc(item)}</span><button class="ie-chip-rm" aria-label="Remove ${esc(item)}">×</button>`
+    chip.querySelector('.ie-chip-rm').addEventListener('click',()=>{ ieItems.splice(i,1); renderIEChips() })
+    wrap.appendChild(chip)
+  })
+  document.getElementById('ie-add-input').addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();ieAddIngredient()} })
+}
+window.ieAddIngredient=function(){ const inp=document.getElementById('ie-add-input'),val=inp.value.trim(); if(!val)return; val.split(',').map(s=>s.trim()).filter(Boolean).forEach(v=>{if(!ieItems.includes(v))ieItems.push(v)}); inp.value=''; renderIEChips() }
+
+// ── Build form ─────────────────────────────────────────────────────────────
+function buildForm(){ const f=new FormData(); pendingFiles.forEach(p=>f.append('images',p)); f.append('cuisine',selCuisine); f.append('diet',selDiet); f.append('servings',String(servings)); f.append('pantry',pantryItems()); f.append('difficulty',selDiff); f.append('timeLimit',selTime); if(ieItems.length)f.append('ingredients',ieItems.join(', ')); return f }
+
+// ── Hide / show prefs helpers ──────────────────────────────────────────────
+function hidePrefs(){
+  PREF_SECTION.setAttribute('hidden','')
+  PANTRY_BTN.setAttribute('hidden','')
+  PANTRY_BODY.setAttribute('hidden','')
+}
+function showPrefs(){
+  PREF_SECTION.removeAttribute('hidden')
+  PANTRY_BTN.removeAttribute('hidden')
+  PANTRY_BODY.removeAttribute('hidden')
+}
+
+// ── Scan ───────────────────────────────────────────────────────────────────
+document.getElementById('btn-scan').addEventListener('click',startScan)
+
+function startScan(){
+  if(!pendingFiles.length)return
+  thumb.src=pendingURLs[0]
+  extraStrip.innerHTML=''
+  if(pendingFiles.length>1){
+    pendingURLs.slice(1).forEach(url=>{ const img=document.createElement('img'); img.className='sep-thumb'; img.src=url; img.alt=''; extraStrip.appendChild(img) })
+    const lbl=document.createElement('span'); lbl.className='sep-label'; lbl.textContent='+ '+(pendingFiles.length-1)+' more'; extraStrip.appendChild(lbl)
+    extraStrip.classList.remove('hidden')
+  } else extraStrip.classList.add('hidden')
+
+  dropLabel.setAttribute('hidden','')
+  stagingView.classList.remove('visible')
+  ingEditor.classList.remove('visible')
+  scanBtnSec.classList.remove('visible')
+  hidePrefs()
+
+  scanView.style.opacity='0'; scanView.style.display='block'
+  requestAnimationFrame(()=>{ scanView.style.transition='opacity .35s ease'; scanView.style.opacity='1' })
+
+  resetScanState()
+  const n=pendingFiles.length
+  scanLabel.innerHTML=(n>1?'Scanning '+n+' photos':'Scanning your fridge')+'<span class="dot-anim" aria-hidden="true"></span>'
+  say('Scanning your fridge. Recipe coming shortly.')
+  streamRecipe(buildForm()).catch(err=>showError(err.message))
+}
+
+function resetScanState(){ recipeOut.innerHTML=''; resultFoot.style.display='none'; recipeText=''; progressBar.style.width='0'; progressBar.classList.add('indeterminate'); scanBeam.classList.add('active'); scanGrid.classList.add('active'); scanDot.classList.add('pulse'); stopSpeech() }
+
+// ── Retry ──────────────────────────────────────────────────────────────────
+document.getElementById('btn-retry').addEventListener('click',()=>{
+  if(!pendingFiles.length)return
+  resetScanState()
+  scanLabel.innerHTML='Finding a different recipe<span class="dot-anim" aria-hidden="true"></span>'
+  say('Trying a different recipe.')
+  streamRecipe(buildForm()).catch(err=>showError(err.message))
+})
+
+// ── Stream ─────────────────────────────────────────────────────────────────
+async function streamRecipe(form){
+  const cursor=document.createElement('span'); cursor.className='cursor'; cursor.setAttribute('aria-hidden','true'); recipeOut.appendChild(cursor)
+  try{
+    const resp=await fetch('/api/recipe',{method:'POST',body:form}); if(!resp.ok)throw new Error('Server error '+resp.status)
+    const reader=resp.body.getReader(), dec=new TextDecoder(); let buf='', first=true
+    while(true){
+      const{value,done}=await reader.read(); if(done)break
+      buf+=dec.decode(value,{stream:true})
+      const lines=buf.split('\n'); buf=lines.pop()
+      for(const line of lines){
+        if(!line.startsWith('data: '))continue
+        const raw=line.slice(6).trim(); if(!raw)continue
+        let pl; try{pl=JSON.parse(raw)}catch{continue}
+        if(pl.error){showError(pl.error);return}
+        if(pl.text){
+          if(first){ progressBar.classList.remove('indeterminate'); progressBar.style.width='100%'; scanBeam.classList.remove('active'); scanGrid.classList.remove('active'); scanDot.classList.remove('pulse'); scanLabel.textContent="Here's your recipe!"; first=false }
+          recipeText+=pl.text; renderRecipe(recipeText,cursor)
+        }
+        if(pl.done){ cursor.remove(); resultFoot.style.display='block'; saveHistory(); say('Recipe ready!') }
+      }
+    }
+  }catch(err){showError(err.message)}
+}
+
+// ── Render ─────────────────────────────────────────────────────────────────
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function md(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>')}
+
+function renderRecipe(text,cursor){
+  let timingLine='', caloriesLine=''
+  const lines=text.split('\n').map(raw=>{
+    const t=raw.trim()
+    if(!t)return '<div style="height:4px"></div>'
+    if(/^-{3,}$/.test(t))return '<hr class="r-hr">'
+    const seeM=t.match(/[🥬🌿🍃]?\s*\*\*I can see[^*]*\*\*[:\s]+(.+)/i)
+    if(seeM){ const chips=seeM[1].split(',').map(s=>s.trim()).filter(Boolean).map(i=>'<span class="r-chip">'+esc(i)+'</span>').join(''); return '<div class="r-see"><span class="r-see-lbl">🥬 Spotted in your fridge</span><div class="r-chips">'+chips+'</div></div>' }
+    const tonightM=t.match(/[🍳🥘🍲🫕]?\s*\*\*Tonight[^:]*:\s*([^*]+)\*\*/)
+    if(tonightM)return '<h2 class="r-title">🍳 '+esc(tonightM[1].trim())+'</h2>'
+    const italM=t.match(/^\*([^*]+)\*$/)
+    if(italM)return '<p class="r-subtitle">'+esc(italM[1])+'</p>'
+    if(t.includes('⏱')&&!t.includes('kcal')){ timingLine='<div class="r-timing">'+md(t)+'</div>'; return '<!--timing-->' }
+    if(t.includes('🔥')||t.includes('kcal')){ caloriesLine='<div class="r-calories">'+md(t.replace(/^🔥\s*/,'🔥 '))+'</div>'; return '<!--calories-->' }
+    const stepM=t.match(/^(\d+)\.\s+(.+)/)
+    if(stepM)return '<div class="r-step" data-step="'+stepM[1]+'"><span class="r-num" aria-hidden="true">'+stepM[1]+'</span><span class="r-txt">'+md(stepM[2])+'</span></div>'
+    if(/^\*\*[^*]+\*\*$/.test(t))return '<p class="r-head">'+md(t)+'</p>'
+    return '<p class="r-p">'+md(t)+'</p>'
+  })
+  const metaRow = (timingLine||caloriesLine) ? '<div class="r-meta-row">'+timingLine+caloriesLine+'</div>' : ''
+  const html = lines.join('').replace('<!--timing-->','').replace('<!--calories-->','')+metaRow
+  recipeOut.innerHTML=html
+  if(cursor)recipeOut.appendChild(cursor)
+  recipeOut.scrollIntoView({behavior:'smooth',block:'nearest'})
+}
+
+// ── Error ──────────────────────────────────────────────────────────────────
+function showError(msg){ progressBar.classList.remove('indeterminate'); progressBar.style.width='0'; scanBeam.classList.remove('active'); scanGrid.classList.remove('active'); scanDot.classList.remove('pulse'); scanLabel.textContent='Something went wrong'; recipeOut.innerHTML='<div class="error-box" role="alert">❌ '+msg+'</div>'; resultFoot.style.display='block'; say('Error: '+msg) }
+
+// ── Read aloud ─────────────────────────────────────────────────────────────
+if('speechSynthesis' in window) document.getElementById('btn-speak').style.display='inline-flex'
+document.getElementById('btn-speak').addEventListener('click',()=>{ if(speakOn)stopSpeech(); else readAloud() })
+function readAloud(){
+  if(!recipeText)return; stopSpeech()
+  const titleM=recipeText.match(/\*\*Tonight[^:]*:\s*([^*]+)\*\*/)
+  const steps=recipeText.split('\n').filter(l=>/^\d+\.\s/.test(l.trim())).map(l=>l.trim().replace(/^\d+\.\s*/,''))
+  let txt=''; if(titleM)txt="Tonight's recipe: "+titleM[1].trim()+'. '; txt+=steps.map((s,i)=>'Step '+(i+1)+': '+s).join('. ')
+  const utt=new SpeechSynthesisUtterance(txt); utt.rate=0.88; utt.lang='en-US'
+  let si=0
+  utt.onboundary=e=>{ if(e.name!=='sentence')return; const n=(txt.slice(0,e.charIndex).toLowerCase().match(/step \d+/g)||[]).length; if(n!==si){si=n; document.querySelectorAll('.r-step').forEach((el,i)=>el.classList.toggle('speaking',i===si-1))} }
+  utt.onend=()=>{ speakOn=false; document.querySelectorAll('.r-step').forEach(el=>el.classList.remove('speaking')); const b=document.getElementById('btn-speak'); b.classList.remove('speaking'); b.textContent='🔊 Read aloud' }
+  speechSynthesis.speak(utt); speakOn=true
+  const b=document.getElementById('btn-speak'); b.classList.add('speaking'); b.textContent='⏹ Stop'
+}
+function stopSpeech(){ if('speechSynthesis' in window)speechSynthesis.cancel(); speakOn=false; document.querySelectorAll('.r-step').forEach(el=>el.classList.remove('speaking')); const b=document.getElementById('btn-speak'); b.classList.remove('speaking'); b.textContent='🔊 Read aloud' }
+
+// ── Copy ───────────────────────────────────────────────────────────────────
+document.getElementById('btn-copy').addEventListener('click',()=>{
+  if(!recipeText)return
+  navigator.clipboard?.writeText(recipeText).then(()=>{ const b=document.getElementById('btn-copy'); b.textContent='✓ Copied'; setTimeout(()=>b.textContent='📋 Copy',2000) })
+})
+
+// ── History ────────────────────────────────────────────────────────────────
+const HK='fridgebrain_history'
+function loadHist(){ try{return JSON.parse(localStorage.getItem(HK))||[]}catch{return[]} }
+function saveHist(a){ localStorage.setItem(HK,JSON.stringify(a)) }
+function saveHistory(){
+  if(!recipeText)return
+  const m=recipeText.match(/\*\*Tonight[^:]*:\s*([^*]+)\*\*/), title=m?m[1].trim():'Recipe'
+  const h=loadHist(); h.unshift({id:Date.now(),title,cuisine:selCuisine,diet:selDiet,servings,text:recipeText,time:new Date().toISOString()}); saveHist(h.slice(0,10)); updHCount()
+}
+function updHCount(){ const n=loadHist().length,el=document.getElementById('hcount'); el.classList.toggle('on',n>0) }
+updHCount()
+function timeAgo(iso){ const d=(Date.now()-new Date(iso))/1000; if(d<60)return 'just now'; if(d<3600)return Math.floor(d/60)+'m ago'; if(d<86400)return Math.floor(d/3600)+'h ago'; return Math.floor(d/86400)+'d ago' }
+
+window.openHistory=function(){
+  const overlay=document.getElementById('h-overlay'), list=document.getElementById('h-list'), hist=loadHist()
+  overlay.classList.remove('hidden'); document.body.style.overflow='hidden'
+  list.innerHTML=!hist.length?'<div class="h-empty">No recipes yet — scan your fridge to get started 🍳</div>':hist.map(h=>`<div class="h-item" onclick="loadHist2(${h.id})" tabindex="0" role="button"><span class="hi-icon" aria-hidden="true">🍳</span><div class="hi-body"><div class="hi-title">${esc(h.title)}</div><div class="hi-meta">${h.cuisine!=='Any'?'<span class="hi-tag">'+esc(h.cuisine)+'</span>':''}${h.diet!=='None'?'<span class="hi-tag">'+esc(h.diet)+'</span>':''}<span class="hi-tag">👥 ${h.servings}</span><span class="hi-time">${timeAgo(h.time)}</span></div></div><span class="hi-arr" aria-hidden="true">›</span></div>`).join('')
+  list.querySelectorAll('.h-item').forEach(el=>el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' ')el.click() }))
+}
+window.closeHistory=function(){ document.getElementById('h-overlay').classList.add('hidden'); document.body.style.overflow='' }
+window.loadHist2=function(id){
+  const entry=loadHist().find(h=>h.id===id); if(!entry)return; closeHistory()
+  recipeText=entry.text
+  hidePrefs()
+  dropLabel.setAttribute('hidden',''); stagingView.classList.remove('visible'); scanBtnSec.classList.remove('visible'); ingEditor.classList.remove('visible')
+  extraStrip.classList.add('hidden'); thumb.src=''; document.querySelector('.scan-img-wrap').style.display='none'
+  scanView.style.display='block'; scanView.style.opacity='1'
+  progressBar.style.width='100%'; progressBar.classList.remove('indeterminate'); scanLabel.textContent=entry.title
+  renderRecipe(recipeText,null); resultFoot.style.display='block'; say('Loaded: '+entry.title)
+}
+document.getElementById('h-overlay').addEventListener('click',e=>{ if(e.target===document.getElementById('h-overlay'))closeHistory() })
+
+// ── Reset ──────────────────────────────────────────────────────────────────
+document.getElementById('btn-another').addEventListener('click',reset)
+function reset(){
+  stopSpeech(); pendingURLs.forEach(u=>URL.revokeObjectURL(u)); pendingFiles=[]; pendingURLs=[]; ieItems=[]
+  photoGrid.querySelectorAll('.photo-thumb-wrap').forEach(el=>el.remove())
+  dropLabel.removeAttribute('hidden')
+  stagingView.classList.remove('visible'); scanBtnSec.classList.remove('visible'); ingEditor.classList.remove('visible')
+  showPrefs()
+  document.querySelector('.scan-img-wrap').style.display=''
+  scanView.style.transition='none'; scanView.style.opacity='0'; scanView.style.display='none'
+  resultFoot.style.display='none'
+  document.getElementById('file-input').value=''; document.getElementById('file-extra').value=''
+  progressBar.style.transition='none'; progressBar.style.width='0'
+  setTimeout(()=>{ progressBar.style.transition='width .4s ease' },60)
+  recipeText=''; recipeOut.innerHTML=''
+}
+</script>
+</body>
+</html>
