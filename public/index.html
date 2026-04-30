@@ -548,6 +548,91 @@
     /* ── Footer tip ───────────────────────────────────────────────────── */
     .tip { margin-top:18px; font-size:.7rem; color:var(--muted-lt); text-align:center; max-width:320px; animation:fadeUp .4s .1s ease both; line-height:1.6; }
 
+    /* ── Camera button ────────────────────────────────────────────────── */
+    .camera-row { display:flex; justify-content:center; margin-top:10px; }
+    .btn-camera { display:inline-flex; align-items:center; gap:6px; padding:8px 18px; border-radius:999px; border:1.5px solid var(--border); background:var(--card); font-family:inherit; font-size:.78rem; font-weight:700; color:var(--text-2); cursor:pointer; transition:all .14s; }
+    .btn-camera:hover { border-color:var(--green); color:var(--green); background:var(--green-lt); }
+    #file-camera { position:absolute; width:1px; height:1px; opacity:0; overflow:hidden; clip:rect(0,0,0,0); }
+
+    /* ── Surprise Me ──────────────────────────────────────────────────── */
+    .btn-surprise { width:100%; padding:12px 20px; min-height:46px; background:transparent; border:1.5px dashed var(--border); border-radius:14px; font-family:inherit; font-size:.84rem; font-weight:700; color:var(--muted); cursor:pointer; transition:all .18s; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .btn-surprise:hover { border-color:#8b5cf6; color:#8b5cf6; background:rgba(139,92,246,.06); border-style:solid; }
+    .btn-surprise:active { transform:scale(.98); }
+
+    /* ── Star rating ──────────────────────────────────────────────────── */
+    #rating-section { padding:10px 20px 4px; display:none; }
+    .rating-row { display:flex; align-items:center; gap:8px; }
+    .rating-lbl { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
+    .stars { display:flex; gap:3px; }
+    .star-btn { background:transparent; border:none; font-size:1.3rem; cursor:pointer; color:var(--border); transition:color .1s,transform .1s; line-height:1; padding:2px; }
+    .star-btn.lit { color:#f59e0b; }
+    .star-btn:hover { transform:scale(1.2); color:#f59e0b; }
+    .rating-thanks { font-size:.72rem; color:var(--green); font-weight:600; margin-left:6px; display:none; }
+    .btn-cook { width:100%; padding:13px 20px; min-height:50px; background:#111827; color:#fff; border:none; border-radius:14px; font-family:inherit; font-size:.9rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:9px; transition:background .14s,transform .12s; margin-top:10px; }
+    [data-theme="dark"] .btn-cook { background:#f8f8f6; color:#111; }
+    .btn-cook:hover { opacity:.92; transform:translateY(-1px); }
+
+    /* ── Cooking mode overlay ─────────────────────────────────────────── */
+    #cook-overlay { position:fixed; inset:0; background:var(--bg); z-index:600; display:none; flex-direction:column; }
+    #cook-overlay.open { display:flex; }
+    .cook-header { padding:14px 20px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
+    .cook-exit { padding:7px 13px; border-radius:999px; border:1.5px solid var(--border); background:var(--surface); font-family:inherit; font-size:.78rem; font-weight:700; color:var(--muted); cursor:pointer; }
+    .cook-exit:hover { border-color:var(--red); color:var(--red); }
+    .cook-indicator { font-size:.75rem; font-weight:700; color:var(--muted); }
+    .cook-progress-track { height:4px; background:var(--surface); flex-shrink:0; }
+    .cook-progress-fill { height:4px; background:var(--green); transition:width .35s ease; }
+    .cook-body { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 28px; overflow-y:auto; }
+    .cook-step-label { font-size:.65rem; font-weight:800; text-transform:uppercase; letter-spacing:.12em; color:var(--green); margin-bottom:16px; }
+    .cook-step-text { font-size:1.18rem; line-height:1.72; font-weight:500; color:var(--text); text-align:center; max-width:400px; }
+    .cook-done-screen { text-align:center; }
+    .cook-done-icon { font-size:4rem; margin-bottom:16px; display:block; }
+    .cook-done-title { font-size:1.5rem; font-weight:900; margin-bottom:8px; }
+    .cook-done-sub { color:var(--muted); font-size:.9rem; }
+    .cook-timer-wrap { margin-top:28px; display:flex; flex-direction:column; align-items:center; gap:10px; }
+    .cook-timer-display { font-size:3rem; font-weight:900; font-variant-numeric:tabular-nums; color:var(--text); line-height:1; }
+    .cook-timer-btns { display:flex; gap:8px; }
+    .cook-timer-btn { padding:7px 16px; border-radius:999px; border:1.5px solid var(--border); background:var(--surface); font-family:inherit; font-size:.75rem; font-weight:700; color:var(--text-2); cursor:pointer; }
+    .cook-timer-btn.running { border-color:var(--green); color:var(--green); }
+    .cook-nav { display:grid; grid-template-columns:1fr 2fr; gap:10px; padding:16px 20px 28px; flex-shrink:0; }
+    .cook-back-btn { padding:13px; border-radius:14px; border:1.5px solid var(--border); background:var(--surface); font-family:inherit; font-size:.88rem; font-weight:700; color:var(--text-2); cursor:pointer; }
+    .cook-back-btn:disabled { opacity:.3; cursor:default; }
+    .cook-next-btn { padding:13px; border-radius:14px; border:none; background:var(--green); color:#fff; font-family:inherit; font-size:.9rem; font-weight:800; cursor:pointer; box-shadow:0 4px 14px rgba(22,163,74,.3); }
+    .cook-next-btn:hover { background:var(--green-dk); }
+
+    /* ── Ingredient swap popover ──────────────────────────────────────── */
+    .swap-word { cursor:pointer; border-bottom:1.5px dashed var(--green); color:var(--text); transition:color .12s; }
+    .swap-word:hover { color:var(--green); }
+    #swap-pop { position:fixed; z-index:700; background:var(--card); border:1.5px solid var(--border); border-radius:16px; box-shadow:0 8px 32px rgba(0,0,0,.18); padding:14px; width:240px; display:none; animation:fadeIn .15s ease; }
+    #swap-pop.open { display:block; }
+    .swap-pop-title { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:10px; }
+    .swap-pop-ing { font-size:.9rem; font-weight:800; color:var(--text); margin-bottom:10px; }
+    .swap-pop-list { display:flex; flex-direction:column; gap:6px; }
+    .swap-option { background:var(--surface); border:1.5px solid var(--border); border-radius:10px; padding:9px 11px; cursor:pointer; transition:border-color .12s,background .12s; }
+    .swap-option:hover { border-color:var(--green); background:var(--green-lt); }
+    .swap-name { font-size:.82rem; font-weight:700; color:var(--text); }
+    .swap-note { font-size:.72rem; color:var(--muted); margin-top:2px; }
+    .swap-pop-loading { text-align:center; padding:12px; color:var(--muted); font-size:.82rem; }
+    .swap-pop-close { position:absolute; top:10px; right:10px; width:22px; height:22px; border-radius:50%; border:1.5px solid var(--border); background:var(--surface); color:var(--muted); font-size:.65rem; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+
+    /* ── Nutrition weekly summary ─────────────────────────────────────── */
+    #nutri-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); backdrop-filter:blur(6px); z-index:500; display:flex; align-items:flex-end; justify-content:center; animation:fadeIn .2s ease both; }
+    #nutri-overlay.hidden { display:none; }
+    .nutri-sheet { width:100%; max-width:520px; background:var(--card); border-radius:24px 24px 0 0; animation:slideUp .22s ease both; }
+    .nutri-top { display:flex; align-items:center; justify-content:space-between; padding:18px 20px 14px; border-bottom:1px solid var(--border); }
+    .nutri-top h2 { font-size:.96rem; font-weight:800; margin:0; }
+    .nutri-close { width:30px; height:30px; border-radius:50%; border:1.5px solid var(--border); background:var(--surface); color:var(--muted); font-size:.75rem; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    .nutri-close:hover { border-color:var(--red); color:var(--red); }
+    .nutri-body { padding:20px; }
+    .nutri-total { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:10px; margin-bottom:20px; }
+    .nutri-card { background:var(--surface); border:1.5px solid var(--border); border-radius:14px; padding:14px 12px; text-align:center; }
+    .nutri-value { font-size:1.4rem; font-weight:900; color:var(--text); }
+    .nutri-unit { font-size:.62rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin-top:3px; }
+    .nutri-bar-wrap { margin-bottom:12px; }
+    .nutri-bar-label { display:flex; justify-content:space-between; font-size:.72rem; color:var(--muted); margin-bottom:4px; }
+    .nutri-bar { height:7px; background:var(--border); border-radius:999px; overflow:hidden; }
+    .nutri-bar-fill { height:100%; border-radius:999px; transition:width .6s ease; }
+    .nutri-empty { text-align:center; padding:32px; color:var(--muted); font-size:.86rem; }
+
     /* ── Reduced motion ───────────────────────────────────────────────── */
     @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; } }
 
@@ -608,6 +693,10 @@
       </div>
     </label>
     <input type="file" id="file-input" accept="image/*" onchange="handleFile(this.files[0])">
+    <input type="file" id="file-camera" accept="image/*" capture="environment" onchange="handleFile(this.files[0])">
+    <div class="camera-row">
+      <button class="btn-camera" onclick="document.getElementById('file-camera').click()" type="button">📷 Take photo</button>
+    </div>
 
     <!-- ② Staging -->
     <div id="staging-view" role="region" aria-label="Photos staged">
@@ -751,6 +840,7 @@
     <div id="scan-btn-section">
       <button class="btn-identify" id="btn-identify">🔍 Check ingredients first</button>
       <button class="btn-scan" id="btn-scan">🍳 Get My Recipe <span class="arrow" aria-hidden="true">→</span></button>
+      <button class="btn-surprise" id="btn-surprise">🎲 Surprise Me — randomise everything!</button>
     </div>
 
     <!-- ⑩ Scan view -->
@@ -784,7 +874,23 @@
 
     <!-- ⑪ Result footer -->
     <div id="result-footer">
-      <div class="footer-primary">
+      <div id="rating-section">
+        <div class="rating-row">
+          <span class="rating-lbl">Rate it:</span>
+          <div class="stars" id="star-rating" role="group" aria-label="Rate this recipe">
+            <button class="star-btn" data-star="1" aria-label="1 star">★</button>
+            <button class="star-btn" data-star="2" aria-label="2 stars">★</button>
+            <button class="star-btn" data-star="3" aria-label="3 stars">★</button>
+            <button class="star-btn" data-star="4" aria-label="4 stars">★</button>
+            <button class="star-btn" data-star="5" aria-label="5 stars">★</button>
+          </div>
+          <span class="rating-thanks" id="rating-thanks">Thanks! 🎉</span>
+        </div>
+      </div>
+      <div style="padding:12px 20px 0">
+        <button class="btn-cook" id="btn-cook">🍽️ Start Cooking — step by step</button>
+      </div>
+      <div class="footer-primary" style="padding-top:10px">
         <button class="btn-new-scan" id="btn-another">📸 Scan a new fridge →</button>
       </div>
       <div class="action-row">
@@ -800,6 +906,50 @@
 
   <p class="tip">💡 Wide shot of the whole fridge + a close-up of drawers = best results</p>
 
+</div>
+
+<!-- Cooking mode overlay -->
+<div id="cook-overlay">
+  <div class="cook-header">
+    <button class="cook-exit" onclick="closeCooking()">✕ Exit</button>
+    <span class="cook-indicator" id="cook-indicator">Step 1 of 5</span>
+    <div></div>
+  </div>
+  <div class="cook-progress-track"><div class="cook-progress-fill" id="cook-progress"></div></div>
+  <div class="cook-body" id="cook-body">
+    <div class="cook-step-label" id="cook-step-label">STEP 1</div>
+    <div class="cook-step-text" id="cook-step-text"></div>
+    <div class="cook-timer-wrap">
+      <div class="cook-timer-display" id="cook-timer-display">00:00</div>
+      <div class="cook-timer-btns">
+        <button class="cook-timer-btn" id="cook-timer-start" onclick="cookTimerToggle()">▶ Start timer</button>
+        <button class="cook-timer-btn" onclick="cookTimerReset()">↺ Reset</button>
+      </div>
+    </div>
+  </div>
+  <div class="cook-nav">
+    <button class="cook-back-btn" id="cook-back" onclick="cookNav(-1)" disabled>← Back</button>
+    <button class="cook-next-btn" id="cook-next" onclick="cookNav(1)">Next step →</button>
+  </div>
+</div>
+
+<!-- Ingredient swap popover -->
+<div id="swap-pop" role="dialog" aria-label="Ingredient substitutions">
+  <button class="swap-pop-close" onclick="closeSwap()" aria-label="Close">✕</button>
+  <div class="swap-pop-title">Swap ingredient</div>
+  <div class="swap-pop-ing" id="swap-pop-ing"></div>
+  <div id="swap-pop-list" class="swap-pop-list"></div>
+</div>
+
+<!-- Nutrition summary modal -->
+<div id="nutri-overlay" class="hidden" role="dialog" aria-modal="true" aria-label="Weekly nutrition">
+  <div class="nutri-sheet">
+    <div class="nutri-top">
+      <h2>📊 This Week's Nutrition</h2>
+      <button class="nutri-close" onclick="closeNutri()" aria-label="Close">✕</button>
+    </div>
+    <div class="nutri-body" id="nutri-body"></div>
+  </div>
 </div>
 
 <!-- Shopping list modal -->
@@ -827,6 +977,7 @@
         <span class="h-subtitle" id="h-subtitle">Your past scans</span>
       </div>
       <div class="h-top-actions">
+        <button class="h-clear" onclick="openNutri()" style="border-color:var(--border);color:var(--text-2);" aria-label="Weekly nutrition">📊 Week</button>
         <button class="h-clear" id="h-clear-btn" onclick="clearHistory()" aria-label="Clear all history">Clear all</button>
         <button class="h-close" onclick="closeHistory()" aria-label="Close">✕</button>
       </div>
@@ -1137,7 +1288,7 @@ async function streamRecipe(form){
           if(first){ progressBar.classList.remove('indeterminate'); progressBar.style.width='100%'; scanBeam.classList.remove('active'); scanGrid.classList.remove('active'); scanDot.classList.remove('pulse'); scanLabel.textContent="Here's your recipe!"; first=false }
           recipeText+=pl.text; renderRecipe(recipeText,cursor)
         }
-        if(pl.done){ cursor.remove(); resultFoot.style.display='block'; document.getElementById('tweak-section').style.display='block'; saveHistory(); say('Recipe ready!') }
+        if(pl.done){ cursor.remove(); resultFoot.style.display='block'; document.getElementById('tweak-section').style.display='block'; document.getElementById('rating-section').style.display='block'; currentRating=0; renderStars(0); document.getElementById('rating-thanks').style.display='none'; saveHistory(); say('Recipe ready!') }
       }
     }
   }catch(err){showError(err.message)}
@@ -1146,6 +1297,8 @@ async function streamRecipe(form){
 // ── Render ─────────────────────────────────────────────────────────────────
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function md(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>')}
+// Step text with swappable ingredient words
+function mdStep(s){return esc(s).replace(/\*\*(.+?)\*\*/g,(m,w)=>`<strong class="swap-word" data-ing="${w.replace(/"/g,'&quot;')}">${w}</strong>`).replace(/\*(.+?)\*/g,'<em>$1</em>')}
 
 function renderRecipe(text,cursor){
   let timingLine='', caloriesLine=''
@@ -1155,14 +1308,14 @@ function renderRecipe(text,cursor){
     if(/^-{3,}$/.test(t))return '<hr class="r-hr">'
     const seeM=t.match(/[🥬🌿🍃]?\s*\*\*I can see[^*]*\*\*[:\s]+(.+)/i)
     if(seeM){ const chips=seeM[1].split(',').map(s=>s.trim()).filter(Boolean).map(i=>'<span class="r-chip">'+esc(i)+'</span>').join(''); return '<div class="r-see"><span class="r-see-lbl">🥬 Spotted in your fridge</span><div class="r-chips">'+chips+'</div></div>' }
-    const tonightM=t.match(/[🍳🥘🍲🫕]?\s*\*\*Tonight[^:]*:\s*([^*]+)\*\*/)
-    if(tonightM)return '<h2 class="r-title">🍳 '+esc(tonightM[1].trim())+'</h2>'
+    const tonightM=t.match(/[🍳🌅☀️🍿]?\s*\*\*(?:Tonight|Breakfast|Lunch|Snack)[^:]*:\s*([^*]+)\*\*/)
+    if(tonightM){ const em=t.startsWith('🌅')?'🌅':t.startsWith('☀️')?'☀️':t.startsWith('🍿')?'🍿':'🍳'; return '<h2 class="r-title">'+em+' '+esc(tonightM[1].trim())+'</h2>' }
     const italM=t.match(/^\*([^*]+)\*$/)
     if(italM)return '<p class="r-subtitle">'+esc(italM[1])+'</p>'
     if(t.includes('⏱')&&!t.includes('kcal')){ timingLine='<div class="r-timing">'+md(t)+'</div>'; return '<!--timing-->' }
     if(t.includes('🔥')||t.includes('kcal')){ caloriesLine='<div class="r-calories">'+md(t.replace(/^🔥\s*/,'🔥 '))+'</div>'; return '<!--calories-->' }
     const stepM=t.match(/^(\d+)\.\s+(.+)/)
-    if(stepM)return '<div class="r-step" data-step="'+stepM[1]+'"><span class="r-num" aria-hidden="true">'+stepM[1]+'</span><span class="r-txt">'+md(stepM[2])+'</span></div>'
+    if(stepM)return '<div class="r-step" data-step="'+stepM[1]+'"><span class="r-num" aria-hidden="true">'+stepM[1]+'</span><span class="r-txt">'+mdStep(stepM[2])+'</span></div>'
     if(/^\*\*[^*]+\*\*$/.test(t))return '<p class="r-head">'+md(t)+'</p>'
     return '<p class="r-p">'+md(t)+'</p>'
   })
@@ -1192,6 +1345,201 @@ function readAloud(){
   const b=document.getElementById('btn-speak'); b.classList.add('speaking'); b.textContent='⏹ Stop'
 }
 function stopSpeech(){ if('speechSynthesis' in window)speechSynthesis.cancel(); speakOn=false; document.querySelectorAll('.r-step').forEach(el=>el.classList.remove('speaking')); const b=document.getElementById('btn-speak'); b.classList.remove('speaking'); b.textContent='🔊 Read aloud' }
+
+// ── Camera shortcut ────────────────────────────────────────────────────────
+// (handled inline via onclick on btn-camera, file-camera input)
+
+// ── Surprise Me ────────────────────────────────────────────────────────────
+document.getElementById('btn-surprise').addEventListener('click', ()=>{
+  if(!pendingFiles.length){ say('Upload a fridge photo first, then hit Surprise Me!'); return }
+  const cuisines=['Any','Italian','Mexican','Indian','South Indian','Asian','Mediterranean','American']
+  const diets=['None','None','None','Vegetarian','Vegan','Gluten-Free','Dairy-Free'] // weight toward None
+  const diffs=['Easy','Medium','Medium','Chef']
+  const times=['15','30','60','Any','Any']
+  const meals=['Breakfast','Lunch','Dinner','Dinner','Dinner','Snack']
+  const rnd=arr=>arr[Math.floor(Math.random()*arr.length)]
+  selCuisine=rnd(cuisines); selDiet=rnd(diets); selDiff=rnd(diffs); selTime=rnd(times); selMeal=rnd(meals)
+  // update pill UIs
+  document.querySelectorAll('#cuisine-pills .cuisine-tile').forEach(t=>{ const m=t.dataset.value===selCuisine; t.classList.toggle('active',m); t.setAttribute('aria-pressed',m) })
+  document.querySelectorAll('#diet-pills .pill').forEach(p=>{ const m=p.dataset.value===selDiet; p.classList.toggle('active',m); p.setAttribute('aria-pressed',m) })
+  document.querySelectorAll('#diff-pills .seg-btn').forEach(b=>{ const m=b.dataset.value===selDiff; b.classList.toggle('active',m); b.setAttribute('aria-pressed',m) })
+  document.querySelectorAll('#time-pills .seg-btn').forEach(b=>{ const m=b.dataset.value===selTime; b.classList.toggle('active',m); b.setAttribute('aria-pressed',m) })
+  document.querySelectorAll('#meal-pills .seg-btn').forEach(b=>{ const m=b.dataset.value===selMeal; b.classList.toggle('active',m); b.setAttribute('aria-pressed',m) })
+  startScan()
+})
+
+// ── Star rating ────────────────────────────────────────────────────────────
+let currentRating=0
+function renderStars(n){
+  document.querySelectorAll('.star-btn').forEach((b,i)=>b.classList.toggle('lit',i<n))
+}
+document.getElementById('star-rating').addEventListener('click',e=>{
+  const b=e.target.closest('.star-btn'); if(!b)return
+  const n=parseInt(b.dataset.star); currentRating=n; renderStars(n)
+  document.getElementById('rating-thanks').style.display='inline'
+  // Save rating to most recent history entry
+  const h=loadHist(); if(h.length){ h[0].rating=n; saveHist(h) }
+})
+document.getElementById('star-rating').addEventListener('mouseover',e=>{
+  const b=e.target.closest('.star-btn'); if(!b)return
+  renderStars(parseInt(b.dataset.star))
+})
+document.getElementById('star-rating').addEventListener('mouseleave',()=>renderStars(currentRating))
+
+// ── Cooking mode ───────────────────────────────────────────────────────────
+let cookSteps=[], cookIdx=0, cookTimerInterval=null, cookTimerSecs=0, cookTimerRunning=false, cookWakeLock=null
+
+document.getElementById('btn-cook').addEventListener('click', startCooking)
+
+function startCooking(){
+  cookSteps=recipeText.split('\n').filter(l=>/^\d+\.\s/.test(l.trim())).map(l=>l.trim().replace(/^\d+\.\s*/,'').replace(/\*\*/g,'').replace(/\*/g,''))
+  if(!cookSteps.length)return
+  cookIdx=0; cookTimerSecs=0; cookTimerRunning=false
+  document.getElementById('cook-overlay').classList.add('open')
+  document.getElementById('cook-timer-display').textContent='00:00'
+  document.getElementById('cook-timer-start').textContent='▶ Start'
+  document.getElementById('cook-timer-start').classList.remove('running')
+  document.body.style.overflow='hidden'
+  updateCookStep()
+  navigator.wakeLock?.request('screen').then(lock=>{ cookWakeLock=lock }).catch(()=>{})
+}
+window.closeCooking=function(){
+  document.getElementById('cook-overlay').classList.remove('open')
+  document.body.style.overflow=''
+  clearInterval(cookTimerInterval); cookTimerRunning=false
+  cookWakeLock?.release().then(()=>{ cookWakeLock=null }).catch(()=>{})
+}
+function updateCookStep(){
+  const total=cookSteps.length, isDone=cookIdx>=total
+  document.getElementById('cook-indicator').textContent=isDone?'Done! 🎉':`Step ${cookIdx+1} of ${total}`
+  document.getElementById('cook-progress').style.width=(isDone?100:(cookIdx+1)/total*100)+'%'
+  if(isDone){
+    document.getElementById('cook-body').innerHTML='<div class="cook-done-screen"><span class="cook-done-icon">🎉</span><div class="cook-done-title">Enjoy your meal!</div><div class="cook-done-sub">Rate it when you\'re done</div></div>'
+    document.getElementById('cook-next').textContent='✕ Close'
+    document.getElementById('cook-next').onclick=closeCooking
+    document.getElementById('cook-back').disabled=false
+    return
+  }
+  document.getElementById('cook-step-label').textContent=`STEP ${cookIdx+1} OF ${total}`
+  document.getElementById('cook-step-text').textContent=cookSteps[cookIdx]
+  document.getElementById('cook-back').disabled=cookIdx===0
+  document.getElementById('cook-next').textContent=cookIdx===total-1?'🎉 Finish!':'Next step →'
+  document.getElementById('cook-next').onclick=()=>cookNav(1)
+  // Reset timer on step change
+  clearInterval(cookTimerInterval); cookTimerRunning=false; cookTimerSecs=0
+  document.getElementById('cook-timer-display').textContent='00:00'
+  document.getElementById('cook-timer-start').textContent='▶ Start'; document.getElementById('cook-timer-start').classList.remove('running')
+}
+window.cookNav=function(dir){
+  cookIdx=Math.max(0,cookIdx+dir)
+  if(dir>0&&cookIdx>cookSteps.length)cookIdx=cookSteps.length
+  updateCookStep()
+}
+window.cookTimerToggle=function(){
+  if(cookTimerRunning){
+    clearInterval(cookTimerInterval); cookTimerRunning=false
+    document.getElementById('cook-timer-start').textContent='▶ Resume'; document.getElementById('cook-timer-start').classList.remove('running')
+  } else {
+    cookTimerRunning=true
+    document.getElementById('cook-timer-start').textContent='⏸ Pause'; document.getElementById('cook-timer-start').classList.add('running')
+    cookTimerInterval=setInterval(()=>{ cookTimerSecs++; document.getElementById('cook-timer-display').textContent=String(Math.floor(cookTimerSecs/60)).padStart(2,'0')+':'+String(cookTimerSecs%60).padStart(2,'0') },1000)
+  }
+}
+window.cookTimerReset=function(){
+  clearInterval(cookTimerInterval); cookTimerRunning=false; cookTimerSecs=0
+  document.getElementById('cook-timer-display').textContent='00:00'
+  document.getElementById('cook-timer-start').textContent='▶ Start'; document.getElementById('cook-timer-start').classList.remove('running')
+}
+
+// ── Ingredient swap ────────────────────────────────────────────────────────
+document.getElementById('recipe-output').addEventListener('click', e=>{
+  const w=e.target.closest('.swap-word'); if(!w)return
+  openSwap(w.dataset.ing, w.getBoundingClientRect())
+})
+
+window.openSwap=function(ingredient, rect){
+  const pop=document.getElementById('swap-pop')
+  document.getElementById('swap-pop-ing').textContent=ingredient
+  document.getElementById('swap-pop-list').innerHTML='<div class="swap-pop-loading">Finding swaps…</div>'
+  pop.classList.add('open')
+  // Position near click
+  if(rect){
+    const top=Math.min(rect.bottom+8, window.innerHeight-280)
+    const left=Math.min(Math.max(rect.left, 12), window.innerWidth-260)
+    pop.style.top=top+'px'; pop.style.left=left+'px'
+  } else { pop.style.top='50%'; pop.style.left='50%'; pop.style.transform='translate(-50%,-50%)' }
+  fetch('/api/swap',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ingredient,context:recipeText.slice(0,400)})})
+    .then(r=>r.json()).then(data=>{
+      const swaps=data.swaps||[]
+      if(!swaps.length){ document.getElementById('swap-pop-list').innerHTML='<div class="swap-pop-loading">No suggestions found.</div>'; return }
+      document.getElementById('swap-pop-list').innerHTML=swaps.map((s,i)=>`
+        <div class="swap-option" onclick="applySwap('${esc(ingredient)}','${esc(s.name)}')">
+          <div class="swap-name">${esc(s.name)}</div>
+          <div class="swap-note">${esc(s.note||'')}</div>
+        </div>`).join('')
+    }).catch(()=>{ document.getElementById('swap-pop-list').innerHTML='<div class="swap-pop-loading">Couldn\'t load swaps.</div>' })
+}
+window.closeSwap=function(){
+  const pop=document.getElementById('swap-pop'); if(pop)pop.classList.remove('open')
+}
+window.applySwap=function(from,to){
+  closeSwap()
+  const inp=document.getElementById('tweak-input')
+  inp.value=`Replace ${from} with ${to}`
+  inp.focus()
+  document.getElementById('tweak-section').scrollIntoView({behavior:'smooth',block:'nearest'})
+}
+document.addEventListener('click',e=>{ if(!e.target.closest('#swap-pop')&&!e.target.closest('.swap-word'))closeSwap() })
+
+// ── Nutrition helpers ──────────────────────────────────────────────────────
+function parseNutrition(text){
+  const m=text.match(/~?(\d+)\s*kcal[^|]*?~?(\d+)g\s*protein[^·]*?(\d+)g\s*carbs[^·]*?(\d+)g\s*fat/i)
+  if(!m)return null
+  return {kcal:+m[1],protein:+m[2],carbs:+m[3],fat:+m[4]}
+}
+
+// ── Weekly nutrition summary ───────────────────────────────────────────────
+window.openNutri=function(){
+  document.getElementById('nutri-overlay').classList.remove('hidden')
+  document.body.style.overflow='hidden'
+  const body=document.getElementById('nutri-body')
+  const week=Date.now()-7*24*60*60*1000
+  const entries=loadHist().filter(h=>new Date(h.time).getTime()>week&&h.nutrition)
+  if(!entries.length){ body.innerHTML='<div class="nutri-empty">No recipes with nutrition data this week.<br>Scan your fridge to start tracking!</div>'; return }
+  const totals=entries.reduce((acc,h)=>({
+    kcal:acc.kcal+(h.nutrition.kcal*h.servings),
+    protein:acc.protein+(h.nutrition.protein*h.servings),
+    carbs:acc.carbs+(h.nutrition.carbs*h.servings),
+    fat:acc.fat+(h.nutrition.fat*h.servings)
+  }),{kcal:0,protein:0,carbs:0,fat:0})
+  const macroTotal=totals.protein+totals.carbs+totals.fat||1
+  const pct=(v,t)=>Math.round(v/t*100)
+  body.innerHTML=`
+    <div class="nutri-total">
+      <div class="nutri-card"><div class="nutri-value">${Math.round(totals.kcal)}</div><div class="nutri-unit">kcal total</div></div>
+      <div class="nutri-card"><div class="nutri-value" style="color:#16a34a">${Math.round(totals.protein)}g</div><div class="nutri-unit">protein</div></div>
+      <div class="nutri-card"><div class="nutri-value" style="color:#2563eb">${Math.round(totals.carbs)}g</div><div class="nutri-unit">carbs</div></div>
+      <div class="nutri-card"><div class="nutri-value" style="color:#d97706">${Math.round(totals.fat)}g</div><div class="nutri-unit">fat</div></div>
+    </div>
+    <div class="nutri-bar-wrap">
+      <div class="nutri-bar-label"><span>Protein ${pct(totals.protein,macroTotal)}%</span><span>${Math.round(totals.protein)}g</span></div>
+      <div class="nutri-bar"><div class="nutri-bar-fill" style="width:${pct(totals.protein,macroTotal)}%;background:#16a34a"></div></div>
+    </div>
+    <div class="nutri-bar-wrap">
+      <div class="nutri-bar-label"><span>Carbs ${pct(totals.carbs,macroTotal)}%</span><span>${Math.round(totals.carbs)}g</span></div>
+      <div class="nutri-bar"><div class="nutri-bar-fill" style="width:${pct(totals.carbs,macroTotal)}%;background:#2563eb"></div></div>
+    </div>
+    <div class="nutri-bar-wrap" style="margin-bottom:0">
+      <div class="nutri-bar-label"><span>Fat ${pct(totals.fat,macroTotal)}%</span><span>${Math.round(totals.fat)}g</span></div>
+      <div class="nutri-bar"><div class="nutri-bar-fill" style="width:${pct(totals.fat,macroTotal)}%;background:#d97706"></div></div>
+    </div>
+    <p style="font-size:.72rem;color:var(--muted);margin-top:14px;text-align:center">${entries.length} recipe${entries.length>1?'s':''} tracked this week</p>`
+}
+window.closeNutri=function(){
+  document.getElementById('nutri-overlay').classList.add('hidden')
+  document.body.style.overflow=''
+}
+document.getElementById('nutri-overlay').addEventListener('click',e=>{ if(e.target===document.getElementById('nutri-overlay'))closeNutri() })
 
 // ── Copy ───────────────────────────────────────────────────────────────────
 document.getElementById('btn-copy').addEventListener('click',()=>{
@@ -1291,7 +1639,7 @@ async function submitTweak(){
         let pl; try{pl=JSON.parse(raw)}catch{continue}
         if(pl.error){recipeOut.innerHTML='<div class="error-box">❌ '+pl.error+'</div>'; break}
         if(pl.text){ recipeText+=pl.text; renderRecipe(recipeText,cursor) }
-        if(pl.done){ cursor.remove(); resultFoot.style.display='block'; inp.value=''; saveHistory(); say('Recipe tweaked!') }
+        if(pl.done){ cursor.remove(); resultFoot.style.display='block'; document.getElementById('rating-section').style.display='block'; currentRating=0; renderStars(0); document.getElementById('rating-thanks').style.display='none'; inp.value=''; saveHistory(); say('Recipe tweaked!') }
       }
     }
   }catch(err){ recipeOut.innerHTML='<div class="error-box">❌ '+err.message+'</div>'; resultFoot.style.display='block' }
@@ -1313,7 +1661,8 @@ function saveHistory(){
   const descM  = recipeText.match(/\*([^*\n]{5,80})\*/)
   const snippet= descM ? descM[1].trim() : ''
   const h=loadHist()
-  h.unshift({id:Date.now(),title,snippet,cuisine:selCuisine,diet:selDiet,mealType:selMeal,servings,text:recipeText,time:new Date().toISOString(),pinned:false})
+  const nutrition=parseNutrition(recipeText)
+  h.unshift({id:Date.now(),title,snippet,cuisine:selCuisine,diet:selDiet,mealType:selMeal,servings,text:recipeText,time:new Date().toISOString(),pinned:false,rating:0,nutrition})
   saveHist(h.slice(0,20))
   updHCount()
 }
@@ -1421,7 +1770,7 @@ window.loadHist2=function(id){
   extraStrip.classList.add('hidden'); thumb.src=''; document.querySelector('.scan-img-wrap').style.display='none'
   scanView.style.display='block'; scanView.style.opacity='1'
   progressBar.style.width='100%'; progressBar.classList.remove('indeterminate'); scanLabel.textContent=entry.title
-  renderRecipe(recipeText,null); resultFoot.style.display='block'; document.getElementById('tweak-section').style.display='block'
+  renderRecipe(recipeText,null); resultFoot.style.display='block'; document.getElementById('tweak-section').style.display='block'; document.getElementById('rating-section').style.display='block'; currentRating=entry.rating||0; renderStars(currentRating); document.getElementById('rating-thanks').style.display=currentRating?'inline':'none'
   window.scrollTo({top:0, behavior:'smooth'})
   say('Loaded: '+entry.title)
 }
@@ -1497,7 +1846,7 @@ function reset(){
   document.getElementById('file-input').value=''; document.getElementById('file-extra').value=''
   progressBar.style.transition='none'; progressBar.style.width='0'
   setTimeout(()=>{ progressBar.style.transition='width .4s ease' },60)
-  recipeText=''; recipeOut.innerHTML=''; document.getElementById('tweak-section').style.display='none'; document.getElementById('tweak-input').value=''
+  recipeText=''; recipeOut.innerHTML=''; document.getElementById('tweak-section').style.display='none'; document.getElementById('tweak-input').value=''; document.getElementById('rating-section').style.display='none'; currentRating=0; closeSwap()
   resetPrefs()
   window.scrollTo({top:0, behavior:'smooth'})
 }

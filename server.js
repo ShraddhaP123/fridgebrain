@@ -377,6 +377,37 @@ Keep items short (1–4 words). No duplicates.`,
   }
 })
 
+// ── Ingredient swap endpoint ──────────────────────────────────────────────────
+app.post('/api/swap', express.json(), async (req, res) => {
+  const { ingredient, context } = req.body || {}
+  if (!ingredient) return res.status(400).json({ error: 'Missing ingredient.' })
+
+  console.log(`POST /api/swap — "${ingredient}"`)
+  try {
+    const response = await client.chat.completions.create({
+      model: 'meta-llama/llama-4-scout-17b-16e-instruct',
+      max_tokens: 200,
+      messages: [
+        {
+          role: 'system',
+          content: `Suggest 3 ingredient substitutions. Output ONLY valid JSON — no markdown, no extra text:
+{"swaps":[{"name":"substitute name","note":"short why/how note, max 8 words"}]}`,
+        },
+        {
+          role: 'user',
+          content: `Recipe context: ${context ? context.slice(0, 400) : 'not provided'}\nSwap out: ${ingredient}`,
+        },
+      ],
+    })
+    const raw = response.choices[0]?.message?.content || '{}'
+    const m   = raw.match(/\{[\s\S]*\}/)
+    res.json(m ? JSON.parse(m[0]) : { swaps: [] })
+  } catch (err) {
+    console.error('Swap error:', err)
+    res.status(500).json({ error: err.message })
+  }
+})
+
 // ── Start ─────────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT ?? 3000
 app.listen(PORT, () => {
