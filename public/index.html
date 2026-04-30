@@ -431,13 +431,23 @@
     .r-hr { border:none; border-top:1px solid var(--border); margin:12px 0; }
 
     /* ── Result footer ────────────────────────────────────────────────── */
-    #result-footer { display:none; padding:12px 20px 20px; border-top:1px solid var(--border); }
+    #result-footer { display:none; padding:16px 20px 22px; border-top:1px solid var(--border); }
+    .footer-primary { margin-bottom:10px; }
     .action-row { display:flex; gap:7px; flex-wrap:wrap; }
     .btn { display:inline-flex; align-items:center; gap:6px; padding:9px 15px; border-radius:11px; font-family:inherit; font-size:.81rem; font-weight:700; cursor:pointer; border:none; transition:opacity .14s,transform .12s,background .14s; min-height:42px; white-space:nowrap; }
     .btn:active { transform:scale(.97); }
     .btn:focus-visible { box-shadow:var(--focus); }
     .btn-primary { background:var(--green); color:#fff; box-shadow:0 3px 12px rgba(22,163,74,.28); }
     .btn-primary:hover { background:var(--green-dk); }
+    .btn-new-scan {
+      width:100%; padding:14px 20px; min-height:52px;
+      background:var(--green); color:#fff; border:none; border-radius:14px;
+      font-family:inherit; font-size:.94rem; font-weight:800; cursor:pointer;
+      letter-spacing:-.01em; display:flex; align-items:center; justify-content:center; gap:9px;
+      box-shadow:0 4px 16px rgba(22,163,74,.3); transition:background .14s,transform .12s;
+    }
+    .btn-new-scan:hover  { background:var(--green-dk); transform:translateY(-1px); }
+    .btn-new-scan:active { transform:scale(.99); }
     .btn-ghost   { background:transparent; border:1.5px solid var(--border-2); color:var(--muted); }
     .btn-ghost:hover { background:var(--surface); color:var(--text); }
     .btn-retry   { background:var(--surface); border:1.5px solid var(--border); color:var(--text-2); }
@@ -688,11 +698,13 @@
 
     <!-- ⑪ Result footer -->
     <div id="result-footer">
+      <div class="footer-primary">
+        <button class="btn-new-scan" id="btn-another">📸 Scan a new fridge →</button>
+      </div>
       <div class="action-row">
-        <button class="btn btn-primary" id="btn-another">📸 New scan</button>
-        <button class="btn btn-retry"   id="btn-retry"  >✨ Try different</button>
-        <button class="btn btn-speak"   id="btn-speak"  >🔊 Read aloud</button>
-        <button class="btn btn-ghost"   id="btn-copy"   >📋 Copy</button>
+        <button class="btn btn-retry" id="btn-retry">✨ Try different</button>
+        <button class="btn btn-speak" id="btn-speak">🔊 Read aloud</button>
+        <button class="btn btn-ghost" id="btn-copy">📋 Copy</button>
       </div>
     </div>
 
