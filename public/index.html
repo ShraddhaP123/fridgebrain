@@ -98,9 +98,12 @@
     .nav-btn:hover { background:var(--surface); color:var(--text); }
     .nav-btn:focus-visible { box-shadow:var(--focus); }
     .hcount {
-      position:absolute; top:4px; right:4px;
-      width:8px; height:8px; border-radius:50%;
-      background:var(--green); display:none;
+      position:absolute; top:-4px; right:-4px;
+      min-width:16px; height:16px; border-radius:999px;
+      background:var(--green); color:#fff;
+      font-size:.6rem; font-weight:800; line-height:16px;
+      text-align:center; padding:0 4px;
+      display:none; pointer-events:none;
     }
     .hcount.on { display:block; }
 
@@ -460,26 +463,39 @@
     @media(prefers-color-scheme:dark) { [data-theme="auto"] .error-box { background:#1c0a0a; border-color:#7f1d1d; color:#fca5a5; } }
 
     /* ── History sheet ────────────────────────────────────────────────── */
-    .h-overlay { position:fixed; inset:0; background:rgba(0,0,0,.4); backdrop-filter:blur(4px); z-index:200; display:flex; align-items:flex-end; justify-content:center; animation:fadeIn .2s ease both; }
+    .h-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); backdrop-filter:blur(6px); z-index:200; display:flex; align-items:flex-end; justify-content:center; animation:fadeIn .2s ease both; }
     .h-overlay.hidden { display:none; }
     @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-    .h-sheet { width:100%; max-width:520px; background:var(--card); border-radius:22px 22px 0 0; max-height:76vh; overflow-y:auto; animation:slideUp .22s ease both; }
+    .h-sheet { width:100%; max-width:520px; background:var(--card); border-radius:24px 24px 0 0; max-height:82vh; display:flex; flex-direction:column; animation:slideUp .22s ease both; }
+    .h-scroll { overflow-y:auto; flex:1; }
     @keyframes slideUp { from{transform:translateY(100%)} to{transform:none} }
-    .h-top { display:flex; align-items:center; justify-content:space-between; padding:18px 20px 12px; border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--card); z-index:1; }
-    .h-top h2 { font-size:.96rem; font-weight:800; }
-    .h-close { width:28px; height:28px; border-radius:50%; border:1.5px solid var(--border); background:var(--surface); color:var(--muted); font-size:.75rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .14s; }
+    .h-top { display:flex; align-items:center; justify-content:space-between; padding:18px 20px 14px; border-bottom:1px solid var(--border); background:var(--card); z-index:1; flex-shrink:0; }
+    .h-top-left { display:flex; flex-direction:column; gap:2px; }
+    .h-top h2 { font-size:.96rem; font-weight:800; margin:0; }
+    .h-subtitle { font-size:.7rem; color:var(--muted); }
+    .h-top-actions { display:flex; gap:8px; align-items:center; }
+    .h-clear { font-size:.68rem; font-weight:700; color:var(--muted); background:transparent; border:1.5px solid var(--border); border-radius:999px; padding:4px 10px; cursor:pointer; transition:all .14s; display:none; font-family:inherit; }
+    .h-clear.on { display:block; }
+    .h-clear:hover { border-color:#ef4444; color:#ef4444; }
+    .h-close { width:30px; height:30px; border-radius:50%; border:1.5px solid var(--border); background:var(--surface); color:var(--muted); font-size:.75rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .14s; flex-shrink:0; }
     .h-close:hover { border-color:var(--red); color:var(--red); }
-    .h-empty { padding:36px 20px; text-align:center; color:var(--muted); font-size:.86rem; }
-    .h-item { padding:14px 20px; border-bottom:1px solid var(--border); cursor:pointer; display:flex; align-items:center; gap:12px; transition:background .14s; }
+    .h-empty { padding:52px 24px; text-align:center; color:var(--muted); font-size:.86rem; line-height:1.65; }
+    .h-empty-icon { font-size:2.4rem; display:block; margin-bottom:10px; }
+    .h-item { padding:13px 20px; border-bottom:1px solid var(--border); cursor:pointer; display:flex; align-items:center; gap:12px; transition:background .14s; }
     .h-item:hover { background:var(--surface); }
+    .h-item:hover .hi-del { opacity:1; }
     .h-item:last-child { border-bottom:none; }
-    .hi-icon { font-size:1.4rem; flex-shrink:0; }
+    .hi-icon { font-size:1.3rem; width:40px; height:40px; border-radius:12px; background:var(--surface); border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
     .hi-body { flex:1; min-width:0; }
-    .hi-title { font-size:.86rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .hi-meta  { font-size:.7rem; color:var(--muted); margin-top:2px; display:flex; gap:6px; flex-wrap:wrap; }
-    .hi-tag   { background:var(--green-lt); color:var(--green-dk); border:1px solid var(--green-bd); border-radius:999px; padding:1px 7px; font-size:.62rem; font-weight:600; }
+    .hi-title { font-size:.87rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:2px; }
+    .hi-snippet { font-size:.71rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:4px; }
+    .hi-meta  { font-size:.67rem; color:var(--muted); display:flex; gap:5px; flex-wrap:wrap; align-items:center; }
+    .hi-tag   { background:var(--green-lt); color:var(--green-dk); border:1px solid var(--green-bd); border-radius:999px; padding:1px 7px; font-size:.62rem; font-weight:700; }
     .hi-time  { color:var(--muted-lt); }
-    .hi-arr   { color:var(--muted-lt); font-size:.8rem; }
+    .hi-del   { width:26px; height:26px; border-radius:50%; border:1.5px solid var(--border); background:var(--surface); color:var(--muted); font-size:.65rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .14s; opacity:0; flex-shrink:0; font-family:inherit; }
+    .hi-del:hover { border-color:#ef4444; color:#ef4444; background:#fff0f0; }
+    [data-theme="dark"] .hi-del:hover { background:#2a0a0a; }
+    @media(hover:none){ .hi-del { opacity:1; } }
 
     /* ── Footer tip ───────────────────────────────────────────────────── */
     .tip { margin-top:18px; font-size:.7rem; color:var(--muted-lt); text-align:center; max-width:320px; animation:fadeUp .4s .1s ease both; line-height:1.6; }
@@ -718,10 +734,18 @@
 <div id="h-overlay" class="h-overlay hidden" role="dialog" aria-modal="true" aria-label="Recipe history">
   <div class="h-sheet">
     <div class="h-top">
-      <h2>Recent Recipes</h2>
-      <button class="h-close" onclick="closeHistory()" aria-label="Close">✕</button>
+      <div class="h-top-left">
+        <h2>Recipe History</h2>
+        <span class="h-subtitle" id="h-subtitle">Your past scans</span>
+      </div>
+      <div class="h-top-actions">
+        <button class="h-clear" id="h-clear-btn" onclick="clearHistory()" aria-label="Clear all history">Clear all</button>
+        <button class="h-close" onclick="closeHistory()" aria-label="Close">✕</button>
+      </div>
     </div>
-    <div id="h-list"></div>
+    <div class="h-scroll">
+      <div id="h-list"></div>
+    </div>
   </div>
 </div>
 
@@ -1090,22 +1114,86 @@ document.getElementById('btn-copy').addEventListener('click',()=>{
 const HK='fridgebrain_history'
 function loadHist(){ try{return JSON.parse(localStorage.getItem(HK))||[]}catch{return[]} }
 function saveHist(a){ localStorage.setItem(HK,JSON.stringify(a)) }
+
+const CUISINE_EMOJI={Italian:'🇮🇹',Mexican:'🌮',Indian:'🍛','South Indian':'🥘',Asian:'🥢',Mediterranean:'🫒',American:'🍔',Any:'🍳'}
+function cuisineEmoji(c){ return CUISINE_EMOJI[c]||'🍳' }
+
 function saveHistory(){
   if(!recipeText)return
-  const m=recipeText.match(/\*\*Tonight[^:]*:\s*([^*]+)\*\*/), title=m?m[1].trim():'Recipe'
-  const h=loadHist(); h.unshift({id:Date.now(),title,cuisine:selCuisine,diet:selDiet,servings,text:recipeText,time:new Date().toISOString()}); saveHist(h.slice(0,10)); updHCount()
+  const titleM = recipeText.match(/\*\*Tonight[^:]*:\s*([^*]+)\*\*/)
+  const title  = titleM ? titleM[1].trim() : 'Recipe'
+  // Extract one-line description (italicised line after recipe name)
+  const descM  = recipeText.match(/\*([^*\n]{5,80})\*/)
+  const snippet= descM ? descM[1].trim() : ''
+  const h=loadHist()
+  h.unshift({id:Date.now(),title,snippet,cuisine:selCuisine,diet:selDiet,servings,text:recipeText,time:new Date().toISOString()})
+  saveHist(h.slice(0,20))
+  updHCount()
 }
-function updHCount(){ const n=loadHist().length,el=document.getElementById('hcount'); el.classList.toggle('on',n>0) }
+function updHCount(){
+  const n=loadHist().length, el=document.getElementById('hcount')
+  el.textContent = n > 0 ? n : ''
+  el.classList.toggle('on', n>0)
+}
 updHCount()
 function timeAgo(iso){ const d=(Date.now()-new Date(iso))/1000; if(d<60)return 'just now'; if(d<3600)return Math.floor(d/60)+'m ago'; if(d<86400)return Math.floor(d/3600)+'h ago'; return Math.floor(d/86400)+'d ago' }
 
-window.openHistory=function(){
-  const overlay=document.getElementById('h-overlay'), list=document.getElementById('h-list'), hist=loadHist()
-  overlay.classList.remove('hidden'); document.body.style.overflow='hidden'
-  list.innerHTML=!hist.length?'<div class="h-empty">No recipes yet — scan your fridge to get started 🍳</div>':hist.map(h=>`<div class="h-item" onclick="loadHist2(${h.id})" tabindex="0" role="button"><span class="hi-icon" aria-hidden="true">🍳</span><div class="hi-body"><div class="hi-title">${esc(h.title)}</div><div class="hi-meta">${h.cuisine!=='Any'?'<span class="hi-tag">'+esc(h.cuisine)+'</span>':''}${h.diet!=='None'?'<span class="hi-tag">'+esc(h.diet)+'</span>':''}<span class="hi-tag">👥 ${h.servings}</span><span class="hi-time">${timeAgo(h.time)}</span></div></div><span class="hi-arr" aria-hidden="true">›</span></div>`).join('')
-  list.querySelectorAll('.h-item').forEach(el=>el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' ')el.click() }))
+function renderHistList(){
+  const hist=loadHist()
+  const list=document.getElementById('h-list')
+  const clearBtn=document.getElementById('h-clear-btn')
+  const subtitle=document.getElementById('h-subtitle')
+  clearBtn.classList.toggle('on', hist.length>0)
+  subtitle.textContent = hist.length ? `${hist.length} saved recipe${hist.length>1?'s':''}` : 'Your past scans'
+  if(!hist.length){
+    list.innerHTML='<div class="h-empty"><span class="h-empty-icon">🧊</span>No recipes yet.<br>Scan your fridge to get started.</div>'
+    return
+  }
+  list.innerHTML=hist.map(h=>`
+    <div class="h-item" data-id="${h.id}" tabindex="0" role="button" aria-label="Load ${esc(h.title)}">
+      <div class="hi-icon" aria-hidden="true">${cuisineEmoji(h.cuisine)}</div>
+      <div class="hi-body">
+        <div class="hi-title">${esc(h.title)}</div>
+        ${h.snippet?`<div class="hi-snippet">${esc(h.snippet)}</div>`:''}
+        <div class="hi-meta">
+          ${h.cuisine!=='Any'?`<span class="hi-tag">${esc(h.cuisine)}</span>`:''}
+          ${h.diet!=='None'?`<span class="hi-tag">${esc(h.diet)}</span>`:''}
+          <span class="hi-tag">👥 ${h.servings}</span>
+          <span class="hi-time">${timeAgo(h.time)}</span>
+        </div>
+      </div>
+      <button class="hi-del" data-del="${h.id}" aria-label="Delete this recipe" title="Remove">✕</button>
+    </div>`).join('')
+  list.querySelectorAll('.h-item').forEach(el=>{
+    el.addEventListener('click', e=>{
+      if(e.target.closest('.hi-del'))return
+      loadHist2(parseInt(el.dataset.id))
+    })
+    el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' ')el.click() })
+  })
+  list.querySelectorAll('.hi-del').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      e.stopPropagation()
+      const id=parseInt(btn.dataset.del)
+      saveHist(loadHist().filter(h=>h.id!==id))
+      updHCount(); renderHistList()
+    })
+  })
 }
-window.closeHistory=function(){ document.getElementById('h-overlay').classList.add('hidden'); document.body.style.overflow='' }
+
+window.openHistory=function(){
+  document.getElementById('h-overlay').classList.remove('hidden')
+  document.body.style.overflow='hidden'
+  renderHistList()
+}
+window.closeHistory=function(){
+  document.getElementById('h-overlay').classList.add('hidden')
+  document.body.style.overflow=''
+}
+window.clearHistory=function(){
+  if(!confirm('Clear all saved recipes?'))return
+  saveHist([]); updHCount(); renderHistList()
+}
 window.loadHist2=function(id){
   const entry=loadHist().find(h=>h.id===id); if(!entry)return; closeHistory()
   recipeText=entry.text
@@ -1114,7 +1202,9 @@ window.loadHist2=function(id){
   extraStrip.classList.add('hidden'); thumb.src=''; document.querySelector('.scan-img-wrap').style.display='none'
   scanView.style.display='block'; scanView.style.opacity='1'
   progressBar.style.width='100%'; progressBar.classList.remove('indeterminate'); scanLabel.textContent=entry.title
-  renderRecipe(recipeText,null); resultFoot.style.display='block'; say('Loaded: '+entry.title)
+  renderRecipe(recipeText,null); resultFoot.style.display='block'
+  window.scrollTo({top:0, behavior:'smooth'})
+  say('Loaded: '+entry.title)
 }
 document.getElementById('h-overlay').addEventListener('click',e=>{ if(e.target===document.getElementById('h-overlay'))closeHistory() })
 
@@ -1133,6 +1223,7 @@ function reset(){
   progressBar.style.transition='none'; progressBar.style.width='0'
   setTimeout(()=>{ progressBar.style.transition='width .4s ease' },60)
   recipeText=''; recipeOut.innerHTML=''
+  window.scrollTo({top:0, behavior:'smooth'})
 }
 </script>
 </body>
