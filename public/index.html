@@ -1210,6 +1210,37 @@ document.getElementById('h-overlay').addEventListener('click',e=>{ if(e.target==
 
 // ── Reset ──────────────────────────────────────────────────────────────────
 document.getElementById('btn-another').addEventListener('click',reset)
+function resetPrefs(){
+  // Cuisine → Any
+  selCuisine='Any'
+  document.querySelectorAll('#cuisine-pills .cuisine-tile').forEach(t=>{
+    const isAny=t.dataset.value==='Any'
+    t.classList.toggle('active',isAny); t.setAttribute('aria-pressed',isAny)
+  })
+  // Diet → None
+  selDiet='None'
+  document.querySelectorAll('#diet-pills .pill').forEach(p=>{
+    const isNone=p.dataset.value==='None'
+    p.classList.toggle('active',isNone); p.setAttribute('aria-pressed',isNone)
+  })
+  // Difficulty → Medium
+  selDiff='Medium'
+  document.querySelectorAll('#diff-pills .seg-btn').forEach(b=>{
+    const isMed=b.dataset.value==='Medium'
+    b.classList.toggle('active',isMed); b.setAttribute('aria-pressed',isMed)
+  })
+  // Time → Any
+  selTime='Any'
+  document.querySelectorAll('#time-pills .seg-btn').forEach(b=>{
+    const isAny=b.dataset.value==='Any'
+    b.classList.toggle('active',isAny); b.setAttribute('aria-pressed',isAny)
+  })
+  // Servings → 2 (Couple)
+  setServings(2)
+  // Pantry → clear
+  pantryTags=[]; renderPantryChips(); updBadge()
+}
+
 function reset(){
   stopSpeech(); pendingURLs.forEach(u=>URL.revokeObjectURL(u)); pendingFiles=[]; pendingURLs=[]; ieItems=[]
   photoGrid.querySelectorAll('.photo-thumb-wrap').forEach(el=>el.remove())
@@ -1223,6 +1254,7 @@ function reset(){
   progressBar.style.transition='none'; progressBar.style.width='0'
   setTimeout(()=>{ progressBar.style.transition='width .4s ease' },60)
   recipeText=''; recipeOut.innerHTML=''
+  resetPrefs()
   window.scrollTo({top:0, behavior:'smooth'})
 }
 </script>
