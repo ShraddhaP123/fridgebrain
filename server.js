@@ -166,17 +166,17 @@ app.post('/api/recipe', upload.array('images', 4), async (req, res) => {
   const pantry     = req.body?.pantry     || ''
   const difficulty = req.body?.difficulty || 'Medium'
   const timeLimit  = req.body?.timeLimit  || 'Any'
-  const ingredients = req.body?.ingredients || ''   // pre-confirmed ingredient list (optional)
+  const mealType   = req.body?.mealType   || 'Dinner'
+  const ingredients = req.body?.ingredients || ''
   const files      = req.files || []
   const style      = pickStyle(cuisine)
 
-  console.log(`POST /api/recipe — ${files.length} img | cuisine:${cuisine} diet:${diet} diff:${difficulty} time:${timeLimit} style:"${style}"`)
+  console.log(`POST /api/recipe — ${files.length} img | meal:${mealType} cuisine:${cuisine} diet:${diet} diff:${difficulty} time:${timeLimit} style:"${style}"`)
 
   if (files.length === 0) {
     return res.status(400).json({ error: 'No image uploaded or unsupported format.' })
   }
 
-  // Set up Server-Sent Events
   res.setHeader('Content-Type', 'text/event-stream')
   res.setHeader('Cache-Control', 'no-cache')
   res.setHeader('Connection', 'keep-alive')
@@ -185,10 +185,14 @@ app.post('/api/recipe', upload.array('images', 4), async (req, res) => {
   const send = (payload) => res.write(`data: ${JSON.stringify(payload)}\n\n`)
 
   // ── Build prompt context ───────────────────────────────────────────────────
-  const cuisineNote  = cuisine !== 'Any'  ? `The recipe MUST be ${cuisine} cuisine style.` : ''
-  const dietNote     = diet    !== 'None' ? `The recipe MUST be strictly ${diet}.` : ''
-  const servingsNote = `The recipe must serve exactly ${servings} person${servings > 1 ? 's' : ''}.`
-  const pantryNote   = pantry ? `The user also has these pantry/staple items available: ${pantry}.` : ''
+  const mealLabel   = mealType === 'Any' ? 'meal' : mealType.toLowerCase()
+  const mealNote    = mealType !== 'Any' && mealType !== 'Dinner'
+    ? `MEAL TYPE: This is for ${mealType}. Suggest a dish appropriate for ${mealType.toLowerCase()} — adjust ingredients, portion size, and style accordingly.`
+    : ''
+  const cuisineNote = cuisine !== 'Any'  ? `The recipe MUST be ${cuisine} cuisine style.` : ''
+  const dietNote    = diet    !== 'None' ? `The recipe MUST be strictly ${diet}.` : ''
+  const servingsNote= `The recipe must serve exactly ${servings} person${servings > 1 ? 's' : ''}.`
+  const pantryNote  = pantry ? `The user also has these pantry/staple items available: ${pantry}.` : ''
 
   const photosNote = files.length > 1
     ? `The user has shared ${files.length} photos of their fridge from different angles. Examine ALL photos carefully and combine every ingredient you can spot across all of them.`
@@ -210,6 +214,9 @@ app.post('/api/recipe', upload.array('images', 4), async (req, res) => {
     ? `The user has pre-identified and confirmed these specific fridge ingredients: ${ingredients}. Use ONLY these ingredients (plus any pantry items listed above). Do not imagine or invent other fridge ingredients.`
     : ''
 
+  // Dynamic meal label in the output header
+  const mealHeader = mealType === 'Breakfast' ? '🌅 **Breakfast:' : mealType === 'Lunch' ? '☀️ **Lunch:' : mealType === 'Snack' ? '🍿 **Snack:' : '🍳 **Tonight:'
+
   try {
     const imageBlocks = files.map(f => ({
       type: 'image_url',
@@ -223,8 +230,8 @@ app.post('/api/recipe', upload.array('images', 4), async (req, res) => {
       messages: [
         {
           role: 'system',
-          content: `You are FridgeBrain — a creative, cheerful dinner recipe assistant. You always suggest something interesting and varied — never the same old dish twice.
-${cuisineNote ? '\n' + cuisineNote : ''}${dietNote ? '\n' + dietNote : ''}
+          content: `You are FridgeBrain — a creative, cheerful ${mealLabel} recipe assistant. You always suggest something interesting and varied — never the same old dish twice.
+${mealNote ? '\n' + mealNote : ''}${cuisineNote ? '\n' + cuisineNote : ''}${dietNote ? '\n' + dietNote : ''}
 ${servingsNote}${pantryNote ? '\n' + pantryNote : ''}${photosNote ? '\n' + photosNote : ''}
 ${ingredientNote ? '\n' + ingredientNote : ''}${styleNote ? '\n' + styleNote : ''}
 ${diffNote ? '\n' + diffNote : ''}${timeNote ? '\n' + timeNote : ''}
@@ -235,7 +242,7 @@ When shown fridge photo(s), respond in this exact format (keep it tight):
 
 ---
 
-🍳 **Tonight: [RECIPE NAME IN CAPS]**
+${mealHeader} [RECIPE NAME IN CAPS]**
 *[One-sentence description under 15 words]*
 
 **Steps:**
@@ -252,7 +259,7 @@ When shown fridge photo(s), respond in this exact format (keep it tight):
 Rules:
 - Use ingredients from BOTH the fridge photo(s) AND the pantry staples list
 - Only suggest what you can plausibly see in the fridge or from the pantry list
-- Respect cuisine style, dietary requirements, difficulty, and time limit strictly
+- Respect cuisine style, meal type, dietary requirements, difficulty, and time limit strictly
 - If the images aren't of a fridge, say so warmly and ask for a fridge photo
 - Calorie estimate should be realistic for the actual ingredients and serving size
 - No extra commentary before or after`,
@@ -264,8 +271,8 @@ Rules:
             {
               type: 'text',
               text: files.length > 1
-                ? `I've shared ${files.length} photos of my fridge from different angles. What can I make for dinner tonight?`
-                : 'What can I make for dinner tonight?',
+                ? `I've shared ${files.length} photos of my fridge from different angles. What can I make for ${mealLabel} today?`
+                : `What can I make for ${mealLabel} today?`,
             },
           ],
         },
@@ -276,7 +283,6 @@ Rules:
       const text = chunk.choices[0]?.delta?.content
       if (text) send({ text })
     }
-
     send({ done: true })
 
   } catch (err) {
@@ -288,6 +294,87 @@ Rules:
   }
 
   res.end()
+})
+
+// ── Tweak endpoint (SSE — modify an existing recipe) ─────────────────────────
+app.post('/api/tweak', express.json(), async (req, res) => {
+  const { recipe, tweak } = req.body || {}
+  if (!recipe || !tweak) return res.status(400).json({ error: 'Missing recipe or tweak.' })
+
+  console.log(`POST /api/tweak — "${tweak.slice(0, 60)}"`)
+
+  res.setHeader('Content-Type', 'text/event-stream')
+  res.setHeader('Cache-Control', 'no-cache')
+  res.setHeader('Connection', 'keep-alive')
+  res.flushHeaders()
+
+  const send = (payload) => res.write(`data: ${JSON.stringify(payload)}\n\n`)
+
+  try {
+    const stream = await client.chat.completions.create({
+      model: 'meta-llama/llama-4-scout-17b-16e-instruct',
+      max_tokens: 1000,
+      stream: true,
+      messages: [
+        {
+          role: 'system',
+          content: `You are FridgeBrain. The user wants to modify their recipe.
+Apply the requested tweak and output the COMPLETE revised recipe in the EXACT same format as the original (🥬 I can see, recipe name, description, Steps, time, calories).
+Only change what the tweak asks for — keep everything else the same.
+No extra commentary before or after.`,
+        },
+        {
+          role: 'user',
+          content: `Current recipe:\n${recipe}\n\nTweak: ${tweak}`,
+        },
+      ],
+    })
+
+    for await (const chunk of stream) {
+      const text = chunk.choices[0]?.delta?.content
+      if (text) send({ text })
+    }
+    send({ done: true })
+
+  } catch (err) {
+    console.error('Tweak error:', err)
+    send({ error: err.message ?? 'Unknown error' })
+  }
+  res.end()
+})
+
+// ── Shopping list endpoint (JSON — extract have/need from recipe) ─────────────
+app.post('/api/shopping', express.json(), async (req, res) => {
+  const { recipe } = req.body || {}
+  if (!recipe) return res.status(400).json({ error: 'Missing recipe.' })
+
+  try {
+    const response = await client.chat.completions.create({
+      model: 'meta-llama/llama-4-scout-17b-16e-instruct',
+      max_tokens: 250,
+      messages: [
+        {
+          role: 'system',
+          content: `Extract a shopping list from this recipe.
+The "🥬 I can see:" line tells you what ingredients are already in the fridge.
+Output ONLY valid JSON — no markdown, no extra text:
+{"have": ["item1","item2"], "need": ["item3","item4"]}
+- "have" = ingredients from the "I can see" line
+- "need" = additional ingredients in the recipe steps NOT visible in the fridge (e.g. oil, pasta, spices)
+Keep items short (1–4 words). No duplicates.`,
+        },
+        { role: 'user', content: recipe },
+      ],
+    })
+    const raw = response.choices[0]?.message?.content || '{}'
+    const m   = raw.match(/\{[\s\S]*\}/)
+    const parsed = m ? JSON.parse(m[0]) : { have: [], need: [] }
+    console.log(`POST /api/shopping — have:${parsed.have?.length} need:${parsed.need?.length}`)
+    res.json(parsed)
+  } catch (err) {
+    console.error('Shopping error:', err)
+    res.status(500).json({ error: err.message })
+  }
 })
 
 // ── Start ─────────────────────────────────────────────────────────────────────

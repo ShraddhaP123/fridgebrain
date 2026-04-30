@@ -242,6 +242,40 @@
     .pref-cols { display:grid; grid-template-columns:1fr 1fr; gap:0; border-top:1px solid var(--border); }
     .pref-col  { padding:16px 20px; }
     .pref-col + .pref-col { border-left:1px solid var(--border); }
+    .pref-col-full { grid-column:1/-1; border-left:none !important; }
+
+    /* ── Tweak chat ───────────────────────────────────────────────────── */
+    #tweak-section { display:none; padding:12px 20px 6px; border-top:1px solid var(--border); }
+    .tweak-label { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:7px; display:block; }
+    .tweak-row { display:flex; gap:7px; }
+    .tweak-inp { flex:1; padding:9px 13px; border-radius:11px; border:1.5px solid var(--border); background:var(--surface); font-family:inherit; font-size:.82rem; color:var(--text); outline:none; }
+    .tweak-inp:focus { border-color:var(--green); }
+    .tweak-btn { padding:9px 15px; border-radius:11px; border:none; background:var(--text); color:var(--card); font-family:inherit; font-size:.8rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:opacity .14s; }
+    .tweak-btn:disabled { opacity:.4; cursor:default; }
+
+    /* ── Shopping list modal ─────────────────────────────────────────── */
+    .shop-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); backdrop-filter:blur(6px); z-index:300; display:flex; align-items:flex-end; justify-content:center; animation:fadeIn .2s ease both; }
+    .shop-overlay.hidden { display:none; }
+    .shop-sheet { width:100%; max-width:520px; background:var(--card); border-radius:24px 24px 0 0; max-height:82vh; display:flex; flex-direction:column; animation:slideUp .22s ease both; }
+    .shop-top { display:flex; align-items:center; justify-content:space-between; padding:18px 20px 14px; border-bottom:1px solid var(--border); flex-shrink:0; }
+    .shop-top h2 { font-size:.96rem; font-weight:800; margin:0; }
+    .shop-close { width:30px; height:30px; border-radius:50%; border:1.5px solid var(--border); background:var(--surface); color:var(--muted); font-size:.75rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .14s; }
+    .shop-close:hover { border-color:var(--red); color:var(--red); }
+    .shop-scroll { overflow-y:auto; flex:1; padding:14px 20px; }
+    .shop-section-label { font-size:.65rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--muted); margin:10px 0 8px; display:block; }
+    .shop-section-label:first-child { margin-top:0; }
+    .shop-items { display:flex; flex-direction:column; gap:4px; margin-bottom:14px; }
+    .shop-item { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:10px; border:1.5px solid var(--border); background:var(--surface); cursor:pointer; transition:background .12s; }
+    .shop-item:hover { background:var(--card); }
+    .shop-item input[type=checkbox] { width:16px; height:16px; accent-color:var(--green); flex-shrink:0; cursor:pointer; }
+    .shop-item-text { font-size:.83rem; font-weight:500; flex:1; }
+    .shop-item.checked .shop-item-text { text-decoration:line-through; color:var(--muted); }
+    .shop-footer { padding:12px 20px 20px; border-top:1px solid var(--border); display:flex; gap:8px; flex-shrink:0; }
+    .shop-copy-btn { flex:1; padding:12px; border-radius:11px; border:none; background:var(--green); color:#fff; font-family:inherit; font-size:.84rem; font-weight:700; cursor:pointer; transition:background .14s; }
+    .shop-copy-btn:hover { background:var(--green-dk); }
+    .shop-loading { text-align:center; padding:32px; color:var(--muted); font-size:.84rem; }
+    .shop-spinner { display:inline-block; width:22px; height:22px; border:3px solid var(--border); border-top-color:var(--green); border-radius:50%; animation:spin .7s linear infinite; margin-bottom:8px; }
+    @keyframes spin { to { transform:rotate(360deg); } }
 
     /* ── Diet pills with icons ────────────────────────────────────────── */
     .pill-wrap { display:flex; flex-wrap:wrap; gap:5px; }
@@ -436,7 +470,7 @@
     /* ── Result footer ────────────────────────────────────────────────── */
     #result-footer { display:none; padding:16px 20px 22px; border-top:1px solid var(--border); }
     .footer-primary { margin-bottom:10px; }
-    .action-row { display:flex; gap:7px; flex-wrap:wrap; }
+    .action-row { display:flex; gap:7px; flex-wrap:wrap; align-items:center; }
     .btn { display:inline-flex; align-items:center; gap:6px; padding:9px 15px; border-radius:11px; font-family:inherit; font-size:.81rem; font-weight:700; cursor:pointer; border:none; transition:opacity .14s,transform .12s,background .14s; min-height:42px; white-space:nowrap; }
     .btn:active { transform:scale(.97); }
     .btn:focus-visible { box-shadow:var(--focus); }
@@ -458,6 +492,10 @@
     .btn-speak   { background:var(--surface); border:1.5px solid var(--border); color:var(--text-2); display:none; }
     .btn-speak:hover { border-color:var(--green); color:var(--green); }
     .btn-speak.speaking { background:var(--green-lt); border-color:var(--green); color:var(--green-dk); }
+    .btn-share   { background:var(--surface); border:1.5px solid var(--border); color:var(--text-2); }
+    .btn-share:hover { border-color:#6366f1; color:#6366f1; }
+    .btn-shop    { background:var(--surface); border:1.5px solid var(--border); color:var(--text-2); }
+    .btn-shop:hover { border-color:#f59e0b; color:#f59e0b; }
     .error-box { background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; border-radius:11px; padding:12px 14px; font-size:.82rem; }
     [data-theme="dark"] .error-box { background:#1c0a0a; border-color:#7f1d1d; color:#fca5a5; }
     @media(prefers-color-scheme:dark) { [data-theme="auto"] .error-box { background:#1c0a0a; border-color:#7f1d1d; color:#fca5a5; } }
@@ -496,6 +534,16 @@
     .hi-del:hover { border-color:#ef4444; color:#ef4444; background:#fff0f0; }
     [data-theme="dark"] .hi-del:hover { background:#2a0a0a; }
     @media(hover:none){ .hi-del { opacity:1; } }
+    .hi-pin { width:26px; height:26px; border-radius:50%; border:1.5px solid var(--border); background:var(--surface); color:var(--muted); font-size:.72rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .14s; flex-shrink:0; font-family:inherit; }
+    .hi-pin:hover { border-color:#f59e0b; color:#f59e0b; }
+    .hi-pin.pinned { border-color:#f59e0b; color:#f59e0b; background:#fffbeb; }
+    [data-theme="dark"] .hi-pin.pinned { background:#2a1f00; }
+    .hi-actions { display:flex; gap:5px; align-items:center; }
+    .hi-recook { padding:4px 9px; border-radius:999px; border:1.5px solid var(--border); background:var(--surface); color:var(--muted); font-size:.62rem; font-weight:700; cursor:pointer; white-space:nowrap; font-family:inherit; transition:all .14s; opacity:0; }
+    .h-item:hover .hi-recook { opacity:1; }
+    .hi-recook:hover { border-color:var(--green); color:var(--green); background:var(--green-lt); }
+    @media(hover:none){ .hi-recook { opacity:1; } }
+    .h-pinned-sep { font-size:.62rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--muted); padding:10px 20px 4px; display:block; }
 
     /* ── Footer tip ───────────────────────────────────────────────────── */
     .tip { margin-top:18px; font-size:.7rem; color:var(--muted-lt); text-align:center; max-width:320px; animation:fadeUp .4s .1s ease both; line-height:1.6; }
@@ -611,6 +659,19 @@
         <button class="cuisine-tile"        data-value="American"      aria-pressed="false"><span class="ct-emoji">🍔</span><span class="ct-name">American</span></button>
       </div>
 
+      <!-- Meal type -->
+      <div class="pref-cols" id="pref-row-meal">
+        <div class="pref-col pref-col-full" id="sec-meal">
+          <span class="pref-label">Meal type</span>
+          <div class="seg-ctrl" id="meal-pills" role="group" aria-label="Meal type">
+            <button class="seg-btn"        data-value="Breakfast" aria-pressed="false">🌅 Breakfast</button>
+            <button class="seg-btn"        data-value="Lunch"     aria-pressed="false">☀️ Lunch</button>
+            <button class="seg-btn active" data-value="Dinner"    aria-pressed="true" >🌙 Dinner</button>
+            <button class="seg-btn"        data-value="Snack"     aria-pressed="false">🍿 Snack</button>
+          </div>
+        </div>
+      </div>
+
       <!-- Diet + Servings -->
       <div class="pref-cols" id="pref-row-1">
         <div class="pref-col" id="sec-diet">
@@ -710,6 +771,15 @@
         <div class="progress-track"><div class="progress-bar indeterminate" id="progress-bar"></div></div>
       </div>
       <div id="recipe-output" aria-live="polite"></div>
+
+      <!-- Tweak chat -->
+      <div id="tweak-section">
+        <span class="tweak-label">💬 Tweak this recipe</span>
+        <div class="tweak-row">
+          <input class="tweak-inp" id="tweak-input" type="text" placeholder="e.g. make it spicier, swap chicken for tofu, no garlic…" maxlength="200">
+          <button class="tweak-btn" id="tweak-btn">Apply →</button>
+        </div>
+      </div>
     </div>
 
     <!-- ⑪ Result footer -->
@@ -719,8 +789,10 @@
       </div>
       <div class="action-row">
         <button class="btn btn-retry" id="btn-retry">✨ Try different</button>
+        <button class="btn btn-shop"  id="btn-shop" >🛒 Shopping list</button>
+        <button class="btn btn-share" id="btn-share">📤 Share</button>
         <button class="btn btn-speak" id="btn-speak">🔊 Read aloud</button>
-        <button class="btn btn-ghost" id="btn-copy">📋 Copy</button>
+        <button class="btn btn-ghost" id="btn-copy" >📋 Copy</button>
       </div>
     </div>
 
@@ -728,6 +800,22 @@
 
   <p class="tip">💡 Wide shot of the whole fridge + a close-up of drawers = best results</p>
 
+</div>
+
+<!-- Shopping list modal -->
+<div id="shop-overlay" class="shop-overlay hidden" role="dialog" aria-modal="true" aria-label="Shopping list">
+  <div class="shop-sheet">
+    <div class="shop-top">
+      <h2>🛒 Shopping List</h2>
+      <button class="shop-close" onclick="closeShop()" aria-label="Close">✕</button>
+    </div>
+    <div class="shop-scroll" id="shop-body">
+      <div class="shop-loading"><div class="shop-spinner"></div><br>Checking ingredients…</div>
+    </div>
+    <div class="shop-footer">
+      <button class="shop-copy-btn" id="shop-copy-btn" onclick="copyShopList()">📋 Copy list</button>
+    </div>
+  </div>
 </div>
 
 <!-- History sheet -->
@@ -781,7 +869,7 @@ function say(msg){ liveStatus.textContent=''; setTimeout(()=>{ liveStatus.textCo
 
 // ── State ──────────────────────────────────────────────────────────────────
 let pendingFiles=[], pendingURLs=[], recipeText='', ieItems=[], speakOn=false
-let selCuisine='Any', selDiet='None', selDiff='Medium', selTime='Any', servings=2
+let selCuisine='Any', selDiet='None', selDiff='Medium', selTime='Any', selMeal='Dinner', servings=2
 
 const PREF_SECTION = document.querySelector('.prefs-section')
 const PANTRY_BTN   = document.getElementById('pantry-toggle')
@@ -830,6 +918,7 @@ function initSeg(id,cb){
 }
 initSeg('diff-pills', v=>{ selDiff=v })
 initSeg('time-pills', v=>{ selTime=v })
+initSeg('meal-pills',  v=>{ selMeal=v  })
 
 // ── Servings ───────────────────────────────────────────────────────────────
 function setServings(n){
@@ -975,7 +1064,7 @@ function renderIEChips(){
 window.ieAddIngredient=function(){ const inp=document.getElementById('ie-add-input'),val=inp.value.trim(); if(!val)return; val.split(',').map(s=>s.trim()).filter(Boolean).forEach(v=>{if(!ieItems.includes(v))ieItems.push(v)}); inp.value=''; renderIEChips() }
 
 // ── Build form ─────────────────────────────────────────────────────────────
-function buildForm(){ const f=new FormData(); pendingFiles.forEach(p=>f.append('images',p)); f.append('cuisine',selCuisine); f.append('diet',selDiet); f.append('servings',String(servings)); f.append('pantry',pantryItems()); f.append('difficulty',selDiff); f.append('timeLimit',selTime); if(ieItems.length)f.append('ingredients',ieItems.join(', ')); return f }
+function buildForm(){ const f=new FormData(); pendingFiles.forEach(p=>f.append('images',p)); f.append('cuisine',selCuisine); f.append('diet',selDiet); f.append('servings',String(servings)); f.append('pantry',pantryItems()); f.append('difficulty',selDiff); f.append('timeLimit',selTime); f.append('mealType',selMeal); if(ieItems.length)f.append('ingredients',ieItems.join(', ')); return f }
 
 // ── Hide / show prefs helpers ──────────────────────────────────────────────
 function hidePrefs(){
@@ -1048,7 +1137,7 @@ async function streamRecipe(form){
           if(first){ progressBar.classList.remove('indeterminate'); progressBar.style.width='100%'; scanBeam.classList.remove('active'); scanGrid.classList.remove('active'); scanDot.classList.remove('pulse'); scanLabel.textContent="Here's your recipe!"; first=false }
           recipeText+=pl.text; renderRecipe(recipeText,cursor)
         }
-        if(pl.done){ cursor.remove(); resultFoot.style.display='block'; saveHistory(); say('Recipe ready!') }
+        if(pl.done){ cursor.remove(); resultFoot.style.display='block'; document.getElementById('tweak-section').style.display='block'; saveHistory(); say('Recipe ready!') }
       }
     }
   }catch(err){showError(err.message)}
@@ -1110,6 +1199,105 @@ document.getElementById('btn-copy').addEventListener('click',()=>{
   navigator.clipboard?.writeText(recipeText).then(()=>{ const b=document.getElementById('btn-copy'); b.textContent='✓ Copied'; setTimeout(()=>b.textContent='📋 Copy',2000) })
 })
 
+// ── Share ──────────────────────────────────────────────────────────────────
+document.getElementById('btn-share').addEventListener('click', async ()=>{
+  if(!recipeText)return
+  const titleM=recipeText.match(/\*\*(?:Tonight|Breakfast|Lunch|Snack)[^:]*:\s*([^*]+)\*\*/)
+  const title = titleM ? titleM[1].trim() : 'My FridgeBrain Recipe'
+  const descM = recipeText.match(/\*([^*\n]{5,80})\*/)
+  const desc  = descM ? descM[1].trim() : ''
+  const plain = recipeText.replace(/\*\*/g,'').replace(/\*/g,'').replace(/---/g,'---').trim()
+  const shareText = `🧠 FridgeBrain Recipe\n\n${title}\n${desc}\n\n${plain}\n\n—\nGenerated by FridgeBrain`
+  if(navigator.share){
+    try{ await navigator.share({ title, text: shareText }) } catch(e){ /* user cancelled */ }
+  } else {
+    navigator.clipboard?.writeText(shareText).then(()=>{ const b=document.getElementById('btn-share'); b.textContent='✓ Copied!'; setTimeout(()=>b.textContent='📤 Share',2200) })
+  }
+})
+
+// ── Shopping list ──────────────────────────────────────────────────────────
+let shopItems = { have:[], need:[] }
+
+document.getElementById('btn-shop').addEventListener('click', openShop)
+
+function openShop(){
+  if(!recipeText)return
+  document.getElementById('shop-overlay').classList.remove('hidden')
+  document.body.style.overflow='hidden'
+  const body=document.getElementById('shop-body')
+  body.innerHTML='<div class="shop-loading"><div class="shop-spinner"></div><br>Checking ingredients…</div>'
+  fetch('/api/shopping',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({recipe:recipeText}) })
+    .then(r=>r.json()).then(data=>{ shopItems=data; renderShopList() })
+    .catch(()=>{ body.innerHTML='<div class="shop-loading">Could not load list. Try copying the recipe instead.</div>' })
+}
+window.closeShop=function(){
+  document.getElementById('shop-overlay').classList.add('hidden')
+  document.body.style.overflow=''
+}
+document.getElementById('shop-overlay').addEventListener('click',e=>{ if(e.target===document.getElementById('shop-overlay'))closeShop() })
+
+function renderShopList(){
+  const body=document.getElementById('shop-body')
+  const { have=[], need=[] }=shopItems
+  let html=''
+  if(need.length){
+    html+=`<span class="shop-section-label">🛒 Buy these</span><div class="shop-items">`
+    need.forEach((item,i)=>{ html+=`<label class="shop-item" data-type="need" data-i="${i}"><input type="checkbox" onchange="shopToggle(this,'need',${i})"><span class="shop-item-text">${esc(item)}</span></label>` })
+    html+=`</div>`
+  }
+  if(have.length){
+    html+=`<span class="shop-section-label">✅ Already in your fridge</span><div class="shop-items">`
+    have.forEach((item,i)=>{ html+=`<label class="shop-item checked" data-type="have" data-i="${i}"><input type="checkbox" checked onchange="shopToggle(this,'have',${i})"><span class="shop-item-text">${esc(item)}</span></label>` })
+    html+=`</div>`
+  }
+  if(!html) html='<div class="shop-loading">No ingredient data found.</div>'
+  body.innerHTML=html
+}
+window.shopToggle=function(cb,type,i){
+  cb.closest('.shop-item').classList.toggle('checked',cb.checked)
+}
+window.copyShopList=function(){
+  const unchecked=[...document.querySelectorAll('#shop-body .shop-item:not(.checked) .shop-item-text')].map(el=>el.textContent)
+  if(!unchecked.length){ const b=document.getElementById('shop-copy-btn'); b.textContent='Nothing to copy'; setTimeout(()=>b.textContent='📋 Copy list',2000); return }
+  const text='🛒 Shopping List\n\n'+unchecked.map(t=>'• '+t).join('\n')
+  navigator.clipboard?.writeText(text).then(()=>{ const b=document.getElementById('shop-copy-btn'); b.textContent='✓ Copied!'; setTimeout(()=>b.textContent='📋 Copy list',2000) })
+}
+
+// ── Tweak ──────────────────────────────────────────────────────────────────
+document.getElementById('tweak-btn').addEventListener('click', submitTweak)
+document.getElementById('tweak-input').addEventListener('keydown', e=>{ if(e.key==='Enter')submitTweak() })
+
+async function submitTweak(){
+  const inp=document.getElementById('tweak-input'), tweak=inp.value.trim()
+  if(!tweak||!recipeText)return
+  const btn=document.getElementById('tweak-btn')
+  btn.disabled=true; btn.textContent='Applying…'
+  const originalRecipe=recipeText
+  recipeText=''; recipeOut.innerHTML=''
+  resultFoot.style.display='none'
+  const cursor=document.createElement('span'); cursor.className='cursor'; cursor.setAttribute('aria-hidden','true'); recipeOut.appendChild(cursor)
+  try{
+    const resp=await fetch('/api/tweak',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({recipe:originalRecipe,tweak}) })
+    if(!resp.ok) throw new Error('Server error '+resp.status)
+    const reader=resp.body.getReader(), dec=new TextDecoder(); let buf=''
+    // recipeText was cleared; re-read from scratch
+    while(true){
+      const{value,done}=await reader.read(); if(done)break
+      buf+=dec.decode(value,{stream:true})
+      const lines=buf.split('\n'); buf=lines.pop()
+      for(const line of lines){
+        if(!line.startsWith('data: '))continue
+        const raw=line.slice(6).trim(); if(!raw)continue
+        let pl; try{pl=JSON.parse(raw)}catch{continue}
+        if(pl.error){recipeOut.innerHTML='<div class="error-box">❌ '+pl.error+'</div>'; break}
+        if(pl.text){ recipeText+=pl.text; renderRecipe(recipeText,cursor) }
+        if(pl.done){ cursor.remove(); resultFoot.style.display='block'; inp.value=''; saveHistory(); say('Recipe tweaked!') }
+      }
+    }
+  }catch(err){ recipeOut.innerHTML='<div class="error-box">❌ '+err.message+'</div>'; resultFoot.style.display='block' }
+  btn.disabled=false; btn.textContent='Apply →'
+}
+
 // ── History ────────────────────────────────────────────────────────────────
 const HK='fridgebrain_history'
 function loadHist(){ try{return JSON.parse(localStorage.getItem(HK))||[]}catch{return[]} }
@@ -1120,13 +1308,12 @@ function cuisineEmoji(c){ return CUISINE_EMOJI[c]||'🍳' }
 
 function saveHistory(){
   if(!recipeText)return
-  const titleM = recipeText.match(/\*\*Tonight[^:]*:\s*([^*]+)\*\*/)
+  const titleM = recipeText.match(/\*\*(?:Tonight|Breakfast|Lunch|Snack)[^:]*:\s*([^*]+)\*\*/)
   const title  = titleM ? titleM[1].trim() : 'Recipe'
-  // Extract one-line description (italicised line after recipe name)
   const descM  = recipeText.match(/\*([^*\n]{5,80})\*/)
   const snippet= descM ? descM[1].trim() : ''
   const h=loadHist()
-  h.unshift({id:Date.now(),title,snippet,cuisine:selCuisine,diet:selDiet,servings,text:recipeText,time:new Date().toISOString()})
+  h.unshift({id:Date.now(),title,snippet,cuisine:selCuisine,diet:selDiet,mealType:selMeal,servings,text:recipeText,time:new Date().toISOString(),pinned:false})
   saveHist(h.slice(0,20))
   updHCount()
 }
@@ -1138,38 +1325,64 @@ function updHCount(){
 updHCount()
 function timeAgo(iso){ const d=(Date.now()-new Date(iso))/1000; if(d<60)return 'just now'; if(d<3600)return Math.floor(d/60)+'m ago'; if(d<86400)return Math.floor(d/3600)+'h ago'; return Math.floor(d/86400)+'d ago' }
 
+const MEAL_EMOJI={Breakfast:'🌅',Lunch:'☀️',Dinner:'🌙',Snack:'🍿'}
+
 function renderHistList(){
-  const hist=loadHist()
+  const raw=loadHist()
+  // Pinned entries float to top, otherwise newest first
+  const pinned=raw.filter(h=>h.pinned), unpinned=raw.filter(h=>!h.pinned)
+  const hist=[...pinned,...unpinned]
   const list=document.getElementById('h-list')
   const clearBtn=document.getElementById('h-clear-btn')
   const subtitle=document.getElementById('h-subtitle')
   clearBtn.classList.toggle('on', hist.length>0)
-  subtitle.textContent = hist.length ? `${hist.length} saved recipe${hist.length>1?'s':''}` : 'Your past scans'
+  const pCount=pinned.length
+  subtitle.textContent = hist.length ? `${hist.length} recipe${hist.length>1?'s':''}${pCount?' · '+pCount+' pinned':''}` : 'Your past scans'
   if(!hist.length){
     list.innerHTML='<div class="h-empty"><span class="h-empty-icon">🧊</span>No recipes yet.<br>Scan your fridge to get started.</div>'
     return
   }
-  list.innerHTML=hist.map(h=>`
+  const renderItem = (h, showSep) => `
+    ${showSep?'<span class="h-pinned-sep">Pinned</span>':''}
     <div class="h-item" data-id="${h.id}" tabindex="0" role="button" aria-label="Load ${esc(h.title)}">
       <div class="hi-icon" aria-hidden="true">${cuisineEmoji(h.cuisine)}</div>
       <div class="hi-body">
-        <div class="hi-title">${esc(h.title)}</div>
+        <div class="hi-title">${h.pinned?'📌 ':''}${esc(h.title)}</div>
         ${h.snippet?`<div class="hi-snippet">${esc(h.snippet)}</div>`:''}
         <div class="hi-meta">
+          ${h.mealType&&h.mealType!=='Dinner'?`<span class="hi-tag">${MEAL_EMOJI[h.mealType]||''} ${esc(h.mealType)}</span>`:''}
           ${h.cuisine!=='Any'?`<span class="hi-tag">${esc(h.cuisine)}</span>`:''}
           ${h.diet!=='None'?`<span class="hi-tag">${esc(h.diet)}</span>`:''}
           <span class="hi-tag">👥 ${h.servings}</span>
           <span class="hi-time">${timeAgo(h.time)}</span>
         </div>
       </div>
-      <button class="hi-del" data-del="${h.id}" aria-label="Delete this recipe" title="Remove">✕</button>
-    </div>`).join('')
+      <div class="hi-actions">
+        <button class="hi-recook" data-recook="${h.id}" title="Re-cook with same prefs">🔁 Re-cook</button>
+        <button class="hi-pin ${h.pinned?'pinned':''}" data-pin="${h.id}" aria-label="${h.pinned?'Unpin':'Pin'}" title="${h.pinned?'Unpin':'Pin recipe'}">${h.pinned?'★':'☆'}</button>
+        <button class="hi-del"  data-del="${h.id}"  aria-label="Delete" title="Remove">✕</button>
+      </div>
+    </div>`
+
+  list.innerHTML = pinned.length
+    ? renderItem(pinned[0], true) + pinned.slice(1).map(h=>renderItem(h,false)).join('') +
+      (unpinned.length ? '<span class="h-pinned-sep">Recent</span>' + unpinned.map(h=>renderItem(h,false)).join('') : '')
+    : hist.map(h=>renderItem(h,false)).join('')
+
   list.querySelectorAll('.h-item').forEach(el=>{
     el.addEventListener('click', e=>{
-      if(e.target.closest('.hi-del'))return
+      if(e.target.closest('.hi-del')||e.target.closest('.hi-pin')||e.target.closest('.hi-recook'))return
       loadHist2(parseInt(el.dataset.id))
     })
-    el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' ')el.click() })
+    el.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ')&&!e.target.closest('button'))el.click() })
+  })
+  list.querySelectorAll('.hi-pin').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      e.stopPropagation()
+      const id=parseInt(btn.dataset.pin), arr=loadHist()
+      const i=arr.findIndex(h=>h.id===id); if(i<0)return
+      arr[i].pinned=!arr[i].pinned; saveHist(arr); updHCount(); renderHistList()
+    })
   })
   list.querySelectorAll('.hi-del').forEach(btn=>{
     btn.addEventListener('click', e=>{
@@ -1177,6 +1390,12 @@ function renderHistList(){
       const id=parseInt(btn.dataset.del)
       saveHist(loadHist().filter(h=>h.id!==id))
       updHCount(); renderHistList()
+    })
+  })
+  list.querySelectorAll('.hi-recook').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      e.stopPropagation()
+      recookFromHistory(parseInt(btn.dataset.recook))
     })
   })
 }
@@ -1202,9 +1421,28 @@ window.loadHist2=function(id){
   extraStrip.classList.add('hidden'); thumb.src=''; document.querySelector('.scan-img-wrap').style.display='none'
   scanView.style.display='block'; scanView.style.opacity='1'
   progressBar.style.width='100%'; progressBar.classList.remove('indeterminate'); scanLabel.textContent=entry.title
-  renderRecipe(recipeText,null); resultFoot.style.display='block'
+  renderRecipe(recipeText,null); resultFoot.style.display='block'; document.getElementById('tweak-section').style.display='block'
   window.scrollTo({top:0, behavior:'smooth'})
   say('Loaded: '+entry.title)
+}
+function recookFromHistory(id){
+  const entry=loadHist().find(h=>h.id===id); if(!entry)return; closeHistory()
+  // Restore prefs from saved entry
+  selCuisine=entry.cuisine||'Any'
+  selDiet=entry.diet||'None'
+  selMeal=entry.mealType||'Dinner'
+  setServings(entry.servings||2)
+  document.querySelectorAll('#cuisine-pills .cuisine-tile').forEach(t=>{ const m=t.dataset.value===selCuisine; t.classList.toggle('active',m); t.setAttribute('aria-pressed',m) })
+  document.querySelectorAll('#diet-pills .pill').forEach(p=>{ const m=p.dataset.value===selDiet; p.classList.toggle('active',m); p.setAttribute('aria-pressed',m) })
+  document.querySelectorAll('#meal-pills .seg-btn').forEach(b=>{ const m=b.dataset.value===selMeal; b.classList.toggle('active',m); b.setAttribute('aria-pressed',m) })
+  // Return to upload screen (preferences are pre-filled, user uploads a fresh photo)
+  reset()
+  showPrefs()
+  // Show a brief toast that prefs were restored
+  const toast=document.createElement('div')
+  toast.style.cssText='position:fixed;top:72px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--card);padding:9px 16px;border-radius:999px;font-size:.78rem;font-weight:700;z-index:400;pointer-events:none;animation:fadeIn .2s ease'
+  toast.textContent='⚙️ Prefs restored from "'+entry.title+'" — upload your fridge photo'
+  document.body.appendChild(toast); setTimeout(()=>toast.remove(), 3800)
 }
 document.getElementById('h-overlay').addEventListener('click',e=>{ if(e.target===document.getElementById('h-overlay'))closeHistory() })
 
@@ -1235,6 +1473,12 @@ function resetPrefs(){
     const isAny=b.dataset.value==='Any'
     b.classList.toggle('active',isAny); b.setAttribute('aria-pressed',isAny)
   })
+  // Meal type → Dinner
+  selMeal='Dinner'
+  document.querySelectorAll('#meal-pills .seg-btn').forEach(b=>{
+    const isDinner=b.dataset.value==='Dinner'
+    b.classList.toggle('active',isDinner); b.setAttribute('aria-pressed',isDinner)
+  })
   // Servings → 2 (Couple)
   setServings(2)
   // Pantry → clear
@@ -1253,7 +1497,7 @@ function reset(){
   document.getElementById('file-input').value=''; document.getElementById('file-extra').value=''
   progressBar.style.transition='none'; progressBar.style.width='0'
   setTimeout(()=>{ progressBar.style.transition='width .4s ease' },60)
-  recipeText=''; recipeOut.innerHTML=''
+  recipeText=''; recipeOut.innerHTML=''; document.getElementById('tweak-section').style.display='none'; document.getElementById('tweak-input').value=''
   resetPrefs()
   window.scrollTo({top:0, behavior:'smooth'})
 }
